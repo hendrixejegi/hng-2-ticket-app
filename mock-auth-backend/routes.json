@@ -1,0 +1,4 @@
+{
+  "/auth/posts*": "/posts",
+  "/auth/profile": "/profile"
+}
