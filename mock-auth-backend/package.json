@@ -1,0 +1,21 @@
+{
+  "name": "mock-auth-backend",
+  "version": "1.0.0",
+  "description": "Mock authentication API with JSON Server and json-server-auth",
+  "main": "server.js",
+  "scripts": {
+    "start": "json-server db.json --routes routes.json --port 3001",
+    "serve": "json-server-auth db.json --port 3001"
+  },
+  "keywords": [
+    "mock",
+    "auth",
+    "json-server"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "json-server": "^0.17.4",
+    "json-server-auth": "^2.1.0"
+  }
+}

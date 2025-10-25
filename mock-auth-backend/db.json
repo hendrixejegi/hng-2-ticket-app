@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "email": "testuser@example.com",
+      "password": "$2a$10$hppP5VRN8/tRipqXRNybNuOXFOAgK1KvynLjohPFxZAQgn.lQrqZ2",
+      "id": 1
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "Public Post",
+      "content": "Anyone can see this post."
+    },
+    {
+      "id": 2,
+      "title": "Protected Post",
+      "content": "Only logged-in users can see this post."
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
