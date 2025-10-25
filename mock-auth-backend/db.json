@@ -1,11 +1,5 @@
 {
-  "users": [
-    {
-      "email": "testuser@example.com",
-      "password": "$2a$10$hppP5VRN8/tRipqXRNybNuOXFOAgK1KvynLjohPFxZAQgn.lQrqZ2",
-      "id": 1
-    }
-  ],
+  "users": [],
   "posts": [
     {
       "id": 1,
