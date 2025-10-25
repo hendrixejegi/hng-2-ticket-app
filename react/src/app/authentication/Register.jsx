@@ -1,8 +1,21 @@
+import { useActionState } from "react";
 import { Link } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
+import register from "../../actions/register";
 
 export default function Register() {
+  const [state, registerAction] = useActionState(register, {
+    data: { first_name: "", last_name: "", email: "", password: "" },
+  });
+  const isValidated = state?.isValidated ?? true;
+
+  const checkError = (name) => {
+    const isProperty = state?.error && name in state.error.fieldErrors;
+    return !isValidated && isProperty;
+  };
+  const showError = (name) => state?.error.fieldErrors[name][0];
+
   return (
     <AuthLayout>
       <div className="bg-surface max-w-lg rounded-lg p-4 shadow-xl">
@@ -15,41 +28,51 @@ export default function Register() {
             — it only takes a minute.
           </p>
         </hgroup>
-        <form action="" className="font-dm mt-8" noValidate>
+        <form action={registerAction} className="font-dm mt-8" noValidate>
           <fieldset className="space-y-4">
             <legend className="sr-only">User Details</legend>
-            <div className="flex flex-col items-center gap-4 md:flex-row">
+            <div className="flex flex-col gap-4 md:flex-row">
               <div className="input-group">
-                <label htmlFor="first-name">First Name*:</label>
+                <label htmlFor="first_name">First Name*:</label>
                 <input
                   type="text"
-                  id="first-name"
-                  name="first-name"
+                  id="first_name"
+                  name="first_name"
                   placeholder="John"
-                  aria-describedby="first-name-error"
+                  aria-describedby="first_name_error"
                   required
+                  defaultValue={state.data.first_name}
                 />
-                <span
-                  id="first-name-error"
-                  className="error"
-                  aria-live="polite"
-                ></span>
+                {checkError("first_name") && (
+                  <span
+                    id="first_name_error"
+                    className="error"
+                    aria-live="polite"
+                  >
+                    {showError("first_name")}
+                  </span>
+                )}
               </div>
               <div className="input-group">
-                <label htmlFor="last-name">Last Name*:</label>
+                <label htmlFor="last_name">Last Name*:</label>
                 <input
                   type="text"
-                  id="last-name"
-                  name="last-name"
+                  id="last_name"
+                  name="last_name"
                   placeholder="Doe"
-                  aria-describedby="last-name-error"
+                  aria-describedby="last_name_error"
                   required
+                  defaultValue={state.data.last_name}
                 />
-                <span
-                  id="last-name-error"
-                  className="error"
-                  aria-live="polite"
-                ></span>
+                {checkError("last_name") && (
+                  <span
+                    id="last_name_error"
+                    className="error"
+                    aria-live="polite"
+                  >
+                    {showError("last_name")}
+                  </span>
+                )}
               </div>
             </div>
             <div className="input-group">
@@ -61,12 +84,13 @@ export default function Register() {
                 placeholder="johndoe@example.com"
                 aria-describedby="email-error"
                 required
+                defaultValue={state.data.email}
               />
-              <span
-                id="email-error"
-                className="error"
-                aria-live="polite"
-              ></span>
+              {checkError("email") && (
+                <span id="email-error" className="error" aria-live="polite">
+                  {showError("email")}
+                </span>
+              )}
             </div>
             <div className="input-group">
               <label htmlFor="password">Password*:</label>
@@ -74,15 +98,15 @@ export default function Register() {
                 type="password"
                 id="password"
                 name="password"
-                placeholder="johndoe@example.com"
                 aria-describedby="password-error"
                 required
+                defaultValue={state.data.password}
               />
-              <span
-                id="password-error"
-                className="error"
-                aria-live="polite"
-              ></span>
+              {checkError("password") && (
+                <span id="password-error" className="error" aria-live="polite">
+                  {showError("password")}
+                </span>
+              )}
             </div>
           </fieldset>
           <button
