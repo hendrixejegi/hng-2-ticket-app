@@ -30,7 +30,7 @@ server.use(jsonServer.bodyParser);
 
 // --- Custom Registration Logic (/register) ---
 server.post("/register", checkRequiredFields, (req, res, next) => {
-  const { email, password, firstname, lastname } = req.body;
+  const { email, password, first_name, last_name } = req.body;
 
   // 1. CHECK FOR EXISTING EMAIL (Runs only if fields are present)
   const userExists = server.db.get("users").find({ email: email }).value();
@@ -43,7 +43,7 @@ server.post("/register", checkRequiredFields, (req, res, next) => {
   }
 
   // 2. CONTINUE REGISTRATION (Pass to json-server-auth)
-  req.body = { email, password, firstname, lastname };
+  req.body = { email, password, first_name, last_name };
   next();
 });
 

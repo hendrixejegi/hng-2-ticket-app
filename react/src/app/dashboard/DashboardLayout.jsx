@@ -1,9 +1,28 @@
-import { NavLink } from "react-router";
+import { useEffect, useState, useCallback } from "react";
+import { NavLink, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
 import { cn } from "../../utils/cn";
 
 export default function DashboardLayout({ children }) {
+  const [userToken, setUserToken] = useState(
+    sessionStorage.getItem("ticket-app-token"),
+  );
+
+  const navigate = useNavigate();
+
+  // Guard: User is not authenticated
+  useEffect(() => {
+    if (!userToken) {
+      navigate("/login");
+    }
+  }, [navigate, userToken]);
+
+  const handleLogOut = useCallback(() => {
+    sessionStorage.removeItem("ticket-app-token");
+    setUserToken(null);
+  }, []);
+
   return (
     <div className="wrapper bg-background font-dm text-text min-h-screen p-4">
       <div className="grid grid-cols-[280px_1fr] gap-4">
@@ -48,7 +67,10 @@ export default function DashboardLayout({ children }) {
               </nav>
             </div>
           </div>
-          <button className="border-error text-error cursor-pointer rounded-lg border-2 px-4 py-2.5 font-semibold">
+          <button
+            className="border-error text-error cursor-pointer rounded-lg border-2 px-4 py-2.5 font-semibold"
+            onClick={handleLogOut}
+          >
             Log Out
           </button>
         </aside>

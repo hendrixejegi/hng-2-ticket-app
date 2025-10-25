@@ -1,20 +1,30 @@
 import { useActionState } from "react";
-import { Link } from "react-router";
+import { useFormStatus } from "react-dom";
+import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
 import register from "../../actions/register";
 
 export default function Register() {
   const [state, registerAction] = useActionState(register, {
+    success: undefined,
+    message: null,
+    fieldErrors: null,
     data: { first_name: "", last_name: "", email: "", password: "" },
   });
-  const isValidated = state?.isValidated ?? true;
+
+  const navigate = useNavigate();
+
+  if (state.success) {
+    navigate("/dashboard");
+  }
 
   const checkError = (name) => {
-    const isProperty = state?.error && name in state.error.fieldErrors;
-    return !isValidated && isProperty;
+    const isProperty = state.fieldErrors && name in state.fieldErrors;
+    return !state.success && isProperty;
   };
-  const showError = (name) => state?.error.fieldErrors[name][0];
+
+  const showError = (name) => state.fieldErrors[name][0];
 
   return (
     <AuthLayout>
@@ -109,12 +119,12 @@ export default function Register() {
               )}
             </div>
           </fieldset>
-          <button
-            type="submit"
-            className="bg-primary text-surface hover:bg-primary/80 mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold"
-          >
-            Register
-          </button>
+          <SubmitButton />
+          {!state.success && (
+            <span className="error mt-2 inline-block" aria-live="polite">
+              {state.message}
+            </span>
+          )}
         </form>
         <p className="font-dm text-text mt-4 text-center">
           Already have an account?{" "}
@@ -129,3 +139,16 @@ export default function Register() {
     </AuthLayout>
   );
 }
+
+const SubmitButton = () => {
+  const status = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className="bg-primary text-surface hover:bg-primary/80 mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold"
+      disabled={status.pending}
+    >
+      Register
+    </button>
+  );
+};

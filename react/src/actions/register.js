@@ -1,4 +1,5 @@
 import * as z from "zod";
+import { getBaseUrl } from "../utils";
 
 const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@()!%*?&])[A-Za-z\d@()!%*?&]{8,}$/;
@@ -21,8 +22,58 @@ export default async function register(prevState, formData) {
   const result = registerSchema.safeParse(data);
 
   if (result.error) {
-    return { data, isValidated: false, error: z.flattenError(result.error) };
+    return {
+      data,
+      success: false,
+      fieldErrors: z.flattenError(result.error).fieldErrors,
+      message: "Registration failed: Invalid credentials",
+    };
   }
 
-  return data;
+  const serverResult = {
+    success: false,
+    message: null,
+  };
+
+  try {
+    const baseUrl = getBaseUrl();
+
+    const response = await fetch(`${baseUrl}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      if (response.status === 400) {
+        // Client error
+        serverResult.message = "Registration Failed: " + errorData.message;
+        throw new Error(errorData.message);
+      } else {
+        // Handle any other non-2xx errors (e.g., 500 server error)
+        console.error(
+          "Registration Failed (Server Error):",
+          errorData.message || response.statusText,
+        );
+        throw new Error(
+          "Server error occurred during registration. Please try again.",
+        );
+      }
+    }
+
+    // Success
+    serverResult.success = true;
+    const successData = await response.json();
+    sessionStorage.setItem("ticket-app-token", successData.accessToken);
+  } catch (error) {
+    console.error("Fetch error:", error);
+  }
+
+  return {
+    ...prevState,
+    ...serverResult,
+    data,
+  };
 }

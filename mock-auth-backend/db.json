@@ -1,5 +1,13 @@
 {
-  "users": [],
+  "users": [
+    {
+      "email": "testuser@mail.com",
+      "password": "$2a$10$hdV2maX2DnBD98gOv3E/a.xBUwJ5K2pewQFW14PKYgIsm/vNctRLK",
+      "first_name": "Test",
+      "last_name": "User",
+      "id": 1
+    }
+  ],
   "posts": [
     {
       "id": 1,
