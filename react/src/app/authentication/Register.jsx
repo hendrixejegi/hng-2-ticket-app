@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
 import register from "../../actions/register";
+import { checkError, showError } from "../../utils";
 
 export default function Register() {
   const [state, registerAction] = useActionState(register, {
@@ -17,14 +18,8 @@ export default function Register() {
 
   if (state.success) {
     navigate("/dashboard");
+    return;
   }
-
-  const checkError = (name) => {
-    const isProperty = state.fieldErrors && name in state.fieldErrors;
-    return !state.success && isProperty;
-  };
-
-  const showError = (name) => state.fieldErrors[name][0];
 
   return (
     <AuthLayout>
@@ -53,13 +48,13 @@ export default function Register() {
                   required
                   defaultValue={state.data.first_name}
                 />
-                {checkError("first_name") && (
+                {checkError("first_name", state) && (
                   <span
                     id="first_name_error"
                     className="error"
                     aria-live="polite"
                   >
-                    {showError("first_name")}
+                    {showError("first_name", state)}
                   </span>
                 )}
               </div>
@@ -74,13 +69,13 @@ export default function Register() {
                   required
                   defaultValue={state.data.last_name}
                 />
-                {checkError("last_name") && (
+                {checkError("last_name", state) && (
                   <span
                     id="last_name_error"
                     className="error"
                     aria-live="polite"
                   >
-                    {showError("last_name")}
+                    {showError("last_name", state)}
                   </span>
                 )}
               </div>
@@ -96,9 +91,9 @@ export default function Register() {
                 required
                 defaultValue={state.data.email}
               />
-              {checkError("email") && (
+              {checkError("email", state) && (
                 <span id="email-error" className="error" aria-live="polite">
-                  {showError("email")}
+                  {showError("email", state)}
                 </span>
               )}
             </div>
@@ -112,9 +107,9 @@ export default function Register() {
                 required
                 defaultValue={state.data.password}
               />
-              {checkError("password") && (
+              {checkError("password", state) && (
                 <span id="password-error" className="error" aria-live="polite">
-                  {showError("password")}
+                  {showError("password", state)}
                 </span>
               )}
             </div>
