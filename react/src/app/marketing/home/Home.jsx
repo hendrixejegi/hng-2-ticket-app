@@ -57,7 +57,7 @@ export default function Home() {
         </div>
       </div>
       {/* Features section */}
-      <section className="flex w-full flex-col items-center justify-center p-4">
+      <section className="flex min-h-screen w-full flex-col items-center justify-center p-4 pt-[68px]">
         <div>
           <h2 className="font-dm text-primary mb-8 text-center text-3xl font-bold">
             Stay on Top of Every Ticket
