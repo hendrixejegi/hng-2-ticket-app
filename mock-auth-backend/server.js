@@ -7,6 +7,21 @@ const router = jsonServer.router(path.join(__dirname, "db.json"));
 const middlewares = jsonServer.defaults();
 const routes = require("./routes.json");
 
+// --- Reusable Middleware for Bad Request Check ---
+const checkRequiredFields = (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "Email and password are required fields.",
+    });
+  }
+  // If fields are present, continue to the next middleware
+  next();
+};
+// --------------------------------------------------
+
 // Enable default middlewares
 server.use(middlewares);
 
@@ -14,10 +29,10 @@ server.use(middlewares);
 server.use(jsonServer.bodyParser);
 
 // --- Custom Registration Logic (/register) ---
-server.post("/register", (req, res, next) => {
+server.post("/register", checkRequiredFields, (req, res, next) => {
   const { email, password, firstname, lastname } = req.body;
 
-  // 1. CHECK FOR EXISTING EMAIL
+  // 1. CHECK FOR EXISTING EMAIL (Runs only if fields are present)
   const userExists = server.db.get("users").find({ email: email }).value();
 
   if (userExists) {
@@ -27,41 +42,34 @@ server.post("/register", (req, res, next) => {
     });
   }
 
-  // 2. CONTINUE REGISTRATION (if email is unique)
-  // json-server-auth expects the body to contain email and password for processing
-  // We keep the other data temporarily and let json-server-auth run its course
-  // Note: json-server-auth automatically saves all fields sent in the request body.
+  // 2. CONTINUE REGISTRATION (Pass to json-server-auth)
   req.body = { email, password, firstname, lastname };
-
-  // Pass control to the next middleware (json-server-auth)
   next();
 });
 
 // --- Custom Login Logic (/login) ---
 server.post(
   "/login",
+  checkRequiredFields,
   (req, res, next) => {
-    const { email, password } = req.body;
+    const { email } = req.body;
 
-    // 1. Check if user exists in the database
+    // 1. Check if user exists (Runs only if fields are present)
     const user = server.db.get("users").find({ email: email }).value();
 
     if (!user) {
-      // If user is not found, send a specific error response
+      // User not found check
       return res.status(401).json({
         error: "Authentication failed",
         message: "Invalid credentials (User not found).",
       });
     }
 
-    // 2. If the user exists, we pass the request to json-server-auth.
-    // json-server-auth will verify the password (which is hashed) and return the token.
-    // If the password verification fails, json-server-auth will automatically send a 400 response.
-    // If it passes, it sends a 200 response with the token and user data.
+    // 2. Pass to json-server-auth for password verification
     next();
   },
   auth
-); // Apply json-server-auth specifically to the /login route for password validation
+);
 
 // Fallback for json-server-auth success/failure handling
 server.db = router.db;
