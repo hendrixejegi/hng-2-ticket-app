@@ -32,7 +32,7 @@ const featuresList = [
 
 export default function Home() {
   return (
-    <>
+    <div>
       {/* Hero section */}
       <div className="flex h-screen w-full flex-col items-center justify-center p-4 pt-[68px]">
         <h1 className="font-dm mb-8 max-w-3xl text-center text-4xl font-bold">
@@ -69,7 +69,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
