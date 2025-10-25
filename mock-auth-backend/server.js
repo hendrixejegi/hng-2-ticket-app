@@ -7,27 +7,40 @@ const router = jsonServer.router(path.join(__dirname, "db.json"));
 const middlewares = jsonServer.defaults();
 const routes = require("./routes.json");
 
-// Enable default middlewares (Logger, Static, Gzip, etc.)
+// Enable default middlewares
 server.use(middlewares);
 
-// IMPORTANT: Custom logic to handle extra user fields
-// This runs BEFORE the default json-server-auth middleware
+// IMPORTANT: Custom logic to handle extra user fields AND check for existing email
 server.use(jsonServer.bodyParser);
 server.post("/register", (req, res, next) => {
-  // Ensure the 'user' object has the required extra fields before saving
-  req.body.user = {
-    email: req.body.email,
-    password: req.body.password,
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
+  const { email, password, firstname, lastname } = req.body;
+
+  // 1. CHECK FOR EXISTING EMAIL
+  const userExists = server.db.get("users").find({ email: email }).value();
+
+  if (userExists) {
+    // If the email is found, send a 400 Bad Request error
+    return res.status(400).json({
+      error: "Registration failed",
+      message: "A user with this email already exists.",
+    });
+  }
+
+  // 2. CONTINUE REGISTRATION (if email is unique)
+  // Ensure the 'user' object has all required fields before saving
+  req.body = {
+    email: email,
+    password: password,
+    firstname: firstname,
+    lastname: lastname,
   };
 
-  // Pass control to the next middleware (json-server-auth)
+  // Pass control to the next middleware (json-server-auth) to save the user and issue a token
   next();
 });
 
 // IMPORTANT: Apply the json-server-auth logic
-server.db = router.db; // Required for json-server-auth to work with db.json
+server.db = router.db;
 server.use(auth);
 
 // Apply routes
