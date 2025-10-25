@@ -3,6 +3,7 @@ import MarketingRoot from "./marketing/MarketingRoot";
 import Home from "./marketing/home/Home";
 import Register from "./authentication/Register";
 import Login from "./authentication/Login";
+import DashboardLayout from "./dashboard/DashboardLayout";
 
 export const router = createBrowserRouter([
   {
@@ -17,5 +18,9 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     Component: Login,
+  },
+  {
+    path: "/dashboard",
+    Component: DashboardLayout,
   },
 ]);

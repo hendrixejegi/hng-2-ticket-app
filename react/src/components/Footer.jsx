@@ -1,17 +1,13 @@
 import { Link } from "react-router";
 import { FaXTwitter, FaGithub, FaLinkedinIn } from "react-icons/fa6";
+import Logo from "./Logo";
 
 const Footer = () => {
   return (
     <footer className="mt-8">
       <div className="md: mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-4 p-4 md:flex-row md:items-center">
         <div className="flex flex-col gap-2">
-          <div
-            className="font-dm text-primary text-2xl font-semibold md:text-center"
-            aria-label="Queue up logo"
-          >
-            QueueUp
-          </div>
+          <Logo />
           <div className="font-dm">Take control of every ticket.</div>
         </div>
         <div className="flex items-start gap-8">

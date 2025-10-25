@@ -23,3 +23,17 @@
   --font-dm: "DM Sans", sans-serif;
   --font-outfit: "Outfit", sans-serif;
 }
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr min(100%, 1440px) 1fr;
+  min-height: 100vh;
+}
+
+.wrapper > * {
+  grid-column-start: 2;
+}
+
+.full-bleed {
+  grid-column: 1/-1;
+}
