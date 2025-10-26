@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useNavigate } from "react-router";
-import { cn } from "../../../utils/cn";
+import { cn } from "../../utils/cn";
 
 const featuresList = [
   {

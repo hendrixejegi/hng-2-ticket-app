@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
 import { cn, capFirstLetter } from "../../utils";
 import getUser from "../../actions/getUser";
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout() {
   const [sessionData, setSessionData] = useState(() => {
     const data = JSON.parse(sessionStorage.getItem("ticket-app-session"));
     if (!data) {
@@ -38,7 +38,8 @@ export default function DashboardLayout({ children }) {
       userId: null,
       token: null,
     });
-  }, []);
+    navigate("/");
+  }, [navigate]);
 
   useEffect(() => {
     if (!(userId || token)) {
@@ -105,7 +106,7 @@ export default function DashboardLayout({ children }) {
             Log Out
           </button>
         </aside>
-        <main>
+        <main className="flex flex-col gap-4">
           <header className="bg-surface rounded-lg p-4">
             <div className="ml-auto flex w-fit items-center gap-4">
               <div>
@@ -117,7 +118,9 @@ export default function DashboardLayout({ children }) {
               </div>
             </div>
           </header>
-          {children}
+          <div className="bg-surface grow rounded-lg p-4">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
