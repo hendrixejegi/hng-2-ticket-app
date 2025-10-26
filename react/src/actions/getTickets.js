@@ -1,26 +1,24 @@
 import { getBaseUrl } from "../utils";
 
-export default async function getUser(userId, token) {
+export default async function getTickets(token) {
   const baseUrl = getBaseUrl();
 
   try {
-    const response = await fetch(`${baseUrl}/me`, {
-      method: "POST",
+    const response = await fetch(`${baseUrl}/tickets`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ userId }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
       console.error(errorData);
-      throw new Error(errorData.message || "Failed to fetch user by ID.");
+      throw new Error(errorData.message || "Failed to fetch Tickets.");
     }
 
-    const user = await response.json();
-    return user;
+    const tickets = await response.json();
+    return tickets;
   } catch (error) {
     console.error(error);
   }
