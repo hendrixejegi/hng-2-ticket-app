@@ -3,6 +3,7 @@ import useTickets from "../../hooks/useTicket";
 import { FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
 import "./TicketManagement.css";
 import CreateTicketModal from "../../components/CreateTicketModal";
+import EditTicketModal from "../../components/EditTicketModal";
 
 export default function TicketManagement() {
   const [ticketsData, refreshTicketsData] = useTickets();
@@ -15,22 +16,11 @@ export default function TicketManagement() {
     creating: false,
     initialRender: true,
   });
-
-  // keep the latest refresh function in a ref so the effect won't re-run
-  // when the function identity changes (which can happen if useTickets
-  // returns a new function each render).
-  const refreshRef = useRef(refreshTicketsData);
-  useEffect(() => {
-    refreshRef.current = refreshTicketsData;
-  }, [refreshTicketsData]);
-
-  const { creating, initialRender } = isCreatingTicket;
-  useEffect(() => {
-    if (!creating && !initialRender) {
-      // call the latest refresh function from the ref
-      refreshRef.current();
-    }
-  }, [creating, initialRender]);
+  const [isEditingTicket, setIsEditingTicket] = useState({
+    editing: false,
+    initialRender: true,
+    ticket: null,
+  });
 
   useEffect(() => {
     if (ticketsData === null) return;
@@ -64,7 +54,36 @@ export default function TicketManagement() {
       closed: closedTickets,
     });
     setIsCreatingTicket((prev) => ({ ...prev, initialRender: false }));
+    setIsEditingTicket((prev) => ({ ...prev, initialRender: false }));
   }, [ticketsData]);
+
+  // Handle create ticket
+
+  // keep the latest refresh function in a ref so the effect won't re-run
+  // when the function identity changes (which can happen if useTickets
+  // returns a new function each render).
+  const refreshRef = useRef(refreshTicketsData);
+  useEffect(() => {
+    refreshRef.current = refreshTicketsData;
+  }, [refreshTicketsData]);
+
+  const { creating, initialRender } = isCreatingTicket;
+  const { editing } = isEditingTicket;
+  useEffect(() => {
+    if ((!creating || !editing) && !initialRender) {
+      // call the latest refresh function from the ref
+      refreshRef.current();
+    }
+  }, [creating, editing, initialRender]);
+
+  // Handle edit ticket
+  const handleEditTicket = (ticketId) => {
+    setIsEditingTicket((prev) => ({
+      ...prev,
+      editing: true,
+      ticket: ticketsData.find((ticket) => ticket.id === ticketId),
+    }));
+  };
 
   return (
     <div className="ticket-management">
@@ -108,7 +127,11 @@ export default function TicketManagement() {
         <div className="ticket-group space-y-4" aria-labelledby="open-group">
           {isArray(sortedData.open) &&
             sortedData.open.map((ticket) => (
-              <TicketCard key={ticket.id} data={ticket} />
+              <TicketCard
+                key={ticket.id}
+                data={ticket}
+                editTicket={() => handleEditTicket(ticket.id)}
+              />
             ))}
         </div>
         {/* In progress group */}
@@ -118,14 +141,22 @@ export default function TicketManagement() {
         >
           {isArray(sortedData.progress) &&
             sortedData.progress.map((ticket) => (
-              <TicketCard key={ticket.id} data={ticket} />
+              <TicketCard
+                key={ticket.id}
+                data={ticket}
+                editTicket={() => handleEditTicket(ticket.id)}
+              />
             ))}
         </div>
         {/* Closed group */}
         <div className="ticket-group space-y-4" aria-labelledby="closed-group">
           {isArray(sortedData.closed) &&
             sortedData.closed.map((ticket) => (
-              <TicketCard key={ticket.id} data={ticket} />
+              <TicketCard
+                key={ticket.id}
+                data={ticket}
+                editTicket={() => handleEditTicket(ticket.id)}
+              />
             ))}
         </div>
       </div>
@@ -134,14 +165,25 @@ export default function TicketManagement() {
           closeModal={() =>
             setIsCreatingTicket((prev) => ({ ...prev, creating: false }))
           }
-          refresh={refreshTicketsData}
+        />
+      )}
+      {isEditingTicket.editing && isEditingTicket.ticket && (
+        <EditTicketModal
+          data={isEditingTicket.ticket}
+          closeModal={() =>
+            setIsEditingTicket((prev) => ({
+              ...prev,
+              editing: false,
+              ticket: null,
+            }))
+          }
         />
       )}
     </div>
   );
 }
 
-function TicketCard({ data }) {
+function TicketCard({ data, editTicket }) {
   const resolveTicketPriority = useCallback((code) => {
     switch (code) {
       case 0:
@@ -173,6 +215,7 @@ function TicketCard({ data }) {
           <button
             aria-label={`Edit ${data.title} ticket`}
             className="hover:text-primary cursor-pointer text-gray-500"
+            onClick={editTicket}
           >
             <FaEdit aria-hidden="true" className="text-lg" />
           </button>
