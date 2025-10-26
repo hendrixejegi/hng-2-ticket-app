@@ -22,4 +22,6 @@ export default async function getTickets(token) {
   } catch (error) {
     console.error(error);
   }
+
+  return null;
 }

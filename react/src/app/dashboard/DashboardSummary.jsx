@@ -1,9 +1,17 @@
-import { useLoaderData } from "react-router";
+import { useState, useEffect } from "react";
+import useTickets from "../../hooks/useTicket";
 import { FaTicket, FaRegHourglassHalf, FaCircleCheck } from "react-icons/fa6";
 
 export default function DashboardSummary() {
-  const { ticketsData } = useLoaderData();
-  const ticketsSummary = getTicketsSummary(ticketsData);
+  const [ticketsData] = useTickets();
+  const [ticketsSummary, setTicketsSummary] = useState(null);
+
+  // Summarize tickets
+  useEffect(() => {
+    if (ticketsData === null) return;
+    const summary = getTicketsSummary(ticketsData);
+    setTicketsSummary(summary);
+  }, [ticketsData]);
 
   return (
     <div>

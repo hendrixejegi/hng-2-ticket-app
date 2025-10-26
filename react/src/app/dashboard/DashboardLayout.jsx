@@ -1,26 +1,35 @@
-import { useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
-import { cn, capFirstLetter } from "../../utils";
+import { cn, capFirstLetter, getSession } from "../../utils";
 import "./DashboardLayout.css";
-import { useLoaderData } from "react-router";
+import getUser from "../../actions/getUser";
 
 export default function DashboardLayout() {
-  const { user } = useLoaderData();
+  const [session, setSession] = useState(getSession());
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
   // Guard: User is not authenticated
   useEffect(() => {
-    if (!user) {
+    if (session === null) {
       navigate("/login");
       return;
     }
-  }, [navigate, user]);
+  }, [navigate, session]);
+
+  const { userId, token } = session;
+
+  // Fetch user info
+  useEffect(() => {
+    getUser(userId, token).then((res) => setUser(res));
+  }, [userId, token]);
 
   const handleLogOut = useCallback(() => {
     sessionStorage.removeItem("ticket-app-token");
+    setSession(null);
     navigate("/");
   }, [navigate]);
 

@@ -9,19 +9,6 @@ import TicketManagement from "./dashboard/TicketManagement";
 import getUser from "../actions/getUser";
 import getTickets from "../actions/getTickets";
 
-const getSession = () =>
-  JSON.parse(sessionStorage.getItem("ticket-app-session"));
-
-const loadTickets = async () => {
-  const session = getSession();
-  if (session === null) {
-    return { ticketData: null };
-  }
-
-  const { token } = session;
-  return { ticketsData: await getTickets(token) };
-};
-
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -38,20 +25,12 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    loader: async () => {
-      const session = getSession();
-      if (session === null) {
-        return { user: null };
-      }
-      const { userId, token } = session;
-      return { user: await getUser(userId, token) };
-    },
+
     Component: DashboardLayout,
     children: [
-      { index: true, loader: loadTickets, Component: DashboardSummary },
+      { index: true, Component: DashboardSummary },
       {
         path: "/dashboard/tickets",
-        loader: loadTickets,
         Component: TicketManagement,
       },
     ],

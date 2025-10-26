@@ -26,7 +26,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/ticket-management"
+                  to="/dashboard/tickets"
                   className="text-primary hover:text-primary/80"
                 >
                   Ticket Management

@@ -24,4 +24,6 @@ export default async function getUser(userId, token) {
   } catch (error) {
     console.error(error);
   }
+
+  return null;
 }

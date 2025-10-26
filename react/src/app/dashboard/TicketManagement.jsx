@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
+import useTickets from "../../hooks/useTicket";
 import { FaPlus, FaTimes } from "react-icons/fa";
 import "./TicketManagement.css";
-import { useLoaderData } from "react-router";
 
 export default function TicketManagement() {
-  const { ticketsData } = useLoaderData();
-  const [data, setData] = useState(ticketsData);
+  const [ticketsData] = useTickets();
   const [sortedData, setSortedData] = useState({
     open: [],
     progress: [],
@@ -14,11 +13,13 @@ export default function TicketManagement() {
   const [isCreatingTicket, setIsCreatingTicket] = useState(false);
 
   useEffect(() => {
+    if (ticketsData === null) return;
+
     const openTickets = [];
     const progressTickets = [];
     const closedTickets = [];
 
-    for (let ticket of data) {
+    for (let ticket of ticketsData) {
       const { status } = ticket;
 
       switch (status) {
@@ -42,7 +43,7 @@ export default function TicketManagement() {
       progress: progressTickets,
       closed: closedTickets,
     });
-  }, [data]);
+  }, [ticketsData]);
 
   return (
     <div className="ticket-management">
