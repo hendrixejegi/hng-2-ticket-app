@@ -4,6 +4,7 @@ import { FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
 import "./TicketManagement.css";
 import CreateTicketModal from "../../components/CreateTicketModal";
 import EditTicketModal from "../../components/EditTicketModal";
+import DeleteTicketModal from "../../components/DeleteTicketModal";
 
 export default function TicketManagement() {
   const [ticketsData, refreshTicketsData] = useTickets();
@@ -12,12 +13,10 @@ export default function TicketManagement() {
     progress: [],
     closed: [],
   });
-  const [isCreatingTicket, setIsCreatingTicket] = useState({
+  const [actionState, setActionState] = useState({
     creating: false,
-    initialRender: true,
-  });
-  const [isEditingTicket, setIsEditingTicket] = useState({
     editing: false,
+    deleting: false,
     initialRender: true,
     ticket: null,
   });
@@ -53,8 +52,7 @@ export default function TicketManagement() {
       progress: progressTickets,
       closed: closedTickets,
     });
-    setIsCreatingTicket((prev) => ({ ...prev, initialRender: false }));
-    setIsEditingTicket((prev) => ({ ...prev, initialRender: false }));
+    setActionState((prev) => ({ ...prev, initialRender: false }));
   }, [ticketsData]);
 
   // Handle create ticket
@@ -67,20 +65,28 @@ export default function TicketManagement() {
     refreshRef.current = refreshTicketsData;
   }, [refreshTicketsData]);
 
-  const { creating, initialRender } = isCreatingTicket;
-  const { editing } = isEditingTicket;
+  const { creating, editing, deleting, initialRender } = actionState;
+
   useEffect(() => {
-    if ((!creating || !editing) && !initialRender) {
+    if ((!creating || !editing || !deleting) && !initialRender) {
       // call the latest refresh function from the ref
       refreshRef.current();
     }
-  }, [creating, editing, initialRender]);
+  }, [creating, editing, deleting, initialRender]);
 
   // Handle edit ticket
   const handleEditTicket = (ticketId) => {
-    setIsEditingTicket((prev) => ({
+    setActionState((prev) => ({
       ...prev,
       editing: true,
+      ticket: ticketsData.find((ticket) => ticket.id === ticketId),
+    }));
+  };
+
+  const handleDeleteTicket = (ticketId) => {
+    setActionState((prev) => ({
+      ...prev,
+      deleting: true,
       ticket: ticketsData.find((ticket) => ticket.id === ticketId),
     }));
   };
@@ -92,7 +98,7 @@ export default function TicketManagement() {
         <button
           className="bg-primary text-surface hover:bg-primary/80 flex w-[180px] cursor-pointer items-center gap-2 rounded-lg px-4 py-3"
           onClick={() =>
-            setIsCreatingTicket((prev) => ({ ...prev, creating: true }))
+            setActionState((prev) => ({ ...prev, creating: true }))
           }
         >
           <FaPlus aria-hidden="true" />
@@ -131,6 +137,7 @@ export default function TicketManagement() {
                 key={ticket.id}
                 data={ticket}
                 editTicket={() => handleEditTicket(ticket.id)}
+                deleteTicket={() => handleDeleteTicket(ticket.id)}
               />
             ))}
         </div>
@@ -145,6 +152,7 @@ export default function TicketManagement() {
                 key={ticket.id}
                 data={ticket}
                 editTicket={() => handleEditTicket(ticket.id)}
+                deleteTicket={() => handleDeleteTicket(ticket.id)}
               />
             ))}
         </div>
@@ -156,24 +164,40 @@ export default function TicketManagement() {
                 key={ticket.id}
                 data={ticket}
                 editTicket={() => handleEditTicket(ticket.id)}
+                deleteTicket={() => handleDeleteTicket(ticket.id)}
               />
             ))}
         </div>
       </div>
-      {isCreatingTicket.creating && (
+      {/* Create modal */}
+      {actionState.creating && (
         <CreateTicketModal
           closeModal={() =>
-            setIsCreatingTicket((prev) => ({ ...prev, creating: false }))
+            setActionState((prev) => ({ ...prev, creating: false }))
           }
         />
       )}
-      {isEditingTicket.editing && isEditingTicket.ticket && (
+      {/* Edit modal */}
+      {actionState.editing && actionState.ticket && (
         <EditTicketModal
-          data={isEditingTicket.ticket}
+          data={actionState.ticket}
           closeModal={() =>
-            setIsEditingTicket((prev) => ({
+            setActionState((prev) => ({
               ...prev,
               editing: false,
+              ticket: null,
+            }))
+          }
+        />
+      )}
+      {/* Delete modal */}
+      {actionState.deleting && actionState.ticket && (
+        <DeleteTicketModal
+          data={actionState.ticket}
+          closeModal={() =>
+            setActionState((prev) => ({
+              ...prev,
+              deleting: false,
               ticket: null,
             }))
           }
@@ -183,7 +207,7 @@ export default function TicketManagement() {
   );
 }
 
-function TicketCard({ data, editTicket }) {
+function TicketCard({ data, editTicket, deleteTicket }) {
   const resolveTicketPriority = useCallback((code) => {
     switch (code) {
       case 0:
@@ -222,6 +246,7 @@ function TicketCard({ data, editTicket }) {
           <button
             aria-label={`Delete ${data.title} ticket`}
             className="hover:text-error cursor-pointer text-gray-500"
+            onClick={deleteTicket}
           >
             <FaTrashAlt aria-hidden="true" className="text-lg" />
           </button>

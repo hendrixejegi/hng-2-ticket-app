@@ -24,6 +24,9 @@ const CreateTicketModal = ({ closeModal }) => {
     state.data.description.length > 0 ? state.data.description : "",
   );
 
+  const TITLE_MAX_LENGTH = 50;
+  const DESCRIPTION_MAX_LENGTH = 100;
+
   const handleTitleChange = useCallback((event) => {
     const value = event.target.value;
     if (value.length > TITLE_MAX_LENGTH) return;
@@ -40,9 +43,6 @@ const CreateTicketModal = ({ closeModal }) => {
     closeModal();
     return;
   }
-
-  const TITLE_MAX_LENGTH = 50;
-  const DESCRIPTION_MAX_LENGTH = 100;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20">
