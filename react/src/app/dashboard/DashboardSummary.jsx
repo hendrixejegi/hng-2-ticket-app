@@ -1,38 +1,28 @@
-import { useState, useEffect } from "react";
-import getTickets from "../../actions/getTickets";
+import { useLoaderData } from "react-router";
 import { FaTicket, FaRegHourglassHalf, FaCircleCheck } from "react-icons/fa6";
 
 export default function DashboardSummary() {
-  const [ticketsData, setTicketsData] = useState(null);
-  const [ticketsStats, setTicketsStats] = useState(null);
-
-  useEffect(() => {
-    getTickets().then((res) => setTicketsData(res));
-  }, []);
-
-  useEffect(() => {
-    if (!ticketsData) {
-      return;
-    }
-    const stats = getTicketsStats(ticketsData);
-    setTicketsStats(stats);
-  }, [ticketsData]);
+  const { ticketsData } = useLoaderData();
+  const ticketsSummary = getTicketsSummary(ticketsData);
 
   return (
     <div>
       <h1 className="sr-only">Dashboard ticket summary</h1>
       <div className="flex gap-4">
-        <SummaryCard value={ticketsStats?.open ?? 0} description="Open Tickets">
+        <SummaryCard
+          value={ticketsSummary?.open ?? 0}
+          description="Open Tickets"
+        >
           <FaRegHourglassHalf aria-hidden="true" className="text-accent" />
         </SummaryCard>
         <SummaryCard
-          value={ticketsStats?.resolved ?? 0}
+          value={ticketsSummary?.resolved ?? 0}
           description="Resolved Tickets"
         >
           <FaCircleCheck aria-hidden="true" className="text-accent" />
         </SummaryCard>
         <SummaryCard
-          value={ticketsStats?.total ?? 0}
+          value={ticketsSummary?.total ?? 0}
           description="Total Tickets"
         >
           <FaTicket aria-hidden="true" className="text-accent" />
@@ -56,7 +46,9 @@ function SummaryCard({ value, children, description }) {
   );
 }
 
-const getTicketsStats = (data) => {
+const getTicketsSummary = (data) => {
+  if (data === null) return null;
+
   let openTickets = 0;
   let resolvedTickets = 0;
 
