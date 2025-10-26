@@ -32,7 +32,7 @@ server.use(jsonServer.bodyParser);
 server.post("/register", checkRequiredFields, (req, res, next) => {
   const { email, password, first_name, last_name } = req.body;
 
-  // 1. CHECK FOR EXISTING EMAIL (Runs only if fields are present)
+  // 1. CHECK FOR EXISTING EMAIL
   const userExists = server.db.get("users").find({ email: email }).value();
 
   if (userExists) {
@@ -54,7 +54,7 @@ server.post(
   (req, res, next) => {
     const { email } = req.body;
 
-    // 1. Check if user exists (Runs only if fields are present)
+    // 1. Check if user exists
     const user = server.db.get("users").find({ email: email }).value();
 
     if (!user) {
@@ -73,7 +73,46 @@ server.post(
 
 // Fallback for json-server-auth success/failure handling
 server.db = router.db;
-server.use(auth);
+server.use(auth); // Use the base auth middleware
+
+// --- New /me Logic (POST request to get user data by ID) ---
+server.post("/me", (req, res) => {
+  // Extract the token from the Authorization header
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+
+  // This check is mainly to ensure we have a token before trying to verify it.
+  if (!token) {
+    return res
+      .status(401)
+      .json({ error: "Unauthorized", message: "Token missing or invalid." });
+  }
+
+  // Frontend will send the userId in the body
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "userId is required in the request body.",
+    });
+  }
+
+  // Find the user in the database using the ID
+  const user = server.db
+    .get("users")
+    .find({ id: Number(userId) })
+    .value();
+
+  if (user) {
+    // Return the single user object
+    return res.json(user);
+  } else {
+    return res.status(404).json({
+      error: "Not Found",
+      message: `User with ID ${userId} not found.`,
+    });
+  }
+});
 
 // Apply routes
 server.use(jsonServer.rewriter(routes));
