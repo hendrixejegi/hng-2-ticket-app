@@ -8,16 +8,76 @@
       "id": 1
     }
   ],
-  "posts": [
+  "tickets": [
     {
       "id": 1,
-      "title": "Public Post",
-      "content": "Anyone can see this post."
+      "title": "Printer not connecting to Wi-Fi network",
+      "description": "The office printer keeps disconnecting from Wi-Fi after restart.",
+      "status": 2,
+      "priority": 1
     },
     {
       "id": 2,
-      "title": "Protected Post",
-      "content": "Only logged-in users can see this post."
+      "title": "Request for new projector cable",
+      "description": "Conference room projector cable is broken and needs replacement.",
+      "status": 0,
+      "priority": 3
+    },
+    {
+      "id": 3,
+      "title": "Website footer alignment issue on mobile view",
+      "description": "Footer text overlaps social media icons on smaller screens.",
+      "status": 1,
+      "priority": 2
+    },
+    {
+      "id": 4,
+      "title": "Email synchronization problem in Outlook",
+      "description": "Outlook app fails to sync new emails since last update.",
+      "status": 3,
+      "priority": 1
+    },
+    {
+      "id": 5,
+      "title": "Unable to access internal HR portal",
+      "description": "Login page for HR portal shows an authentication error.",
+      "status": 0,
+      "priority": 2
+    },
+    {
+      "id": 6,
+      "title": "Request to upgrade team laptops to Windows 11",
+      "description": "Team requests OS upgrade for better security and features.",
+      "status": 1,
+      "priority": 3
+    },
+    {
+      "id": 7,
+      "title": "Slow response from accounting software",
+      "description": "Accounting app takes too long to load reports and dashboards.",
+      "status": 2,
+      "priority": 1
+    },
+    {
+      "id": 8,
+      "title": "Air conditioning not working in server room",
+      "description": "Temperature rising above normal levels; needs urgent check.",
+      "status": 3,
+      "priority": 3
+    },
+    {
+      "id": 9,
+      "title": "Request for additional storage on shared drive",
+      "description": "Shared drive space nearly full, causing file upload failures.",
+      "status": 0,
+      "priority": 2
+    },
+    {
+      "id": 10,
+      "title": "Intermittent network connectivity on 2nd floor",
+      "description": "Wi-Fi signal drops frequently during video calls and uploads.",
+      "status": 1,
+      "priority": 0
     }
   ],
   "profile": {

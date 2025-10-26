@@ -73,20 +73,10 @@ server.post(
 
 // Fallback for json-server-auth success/failure handling
 server.db = router.db;
-server.use(auth); // Use the base auth middleware
+server.use(auth); // This secures all /auth/* routes defined in routes.json
 
-// --- New /me Logic (POST request to get user data by ID) ---
+// --- /me Logic (POST request to get user data by ID) ---
 server.post("/me", (req, res) => {
-  // Extract the token from the Authorization header
-  const token = req.header("Authorization")?.replace("Bearer ", "");
-
-  // This check is mainly to ensure we have a token before trying to verify it.
-  if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Unauthorized", message: "Token missing or invalid." });
-  }
-
   // Frontend will send the userId in the body
   const { userId } = req.body;
 
@@ -98,10 +88,7 @@ server.post("/me", (req, res) => {
   }
 
   // Find the user in the database using the ID
-  const user = server.db
-    .get("users")
-    .find({ id: Number(userId) })
-    .value();
+  const user = server.db.get("users").find({ id: userId }).value();
 
   if (user) {
     // Return the single user object

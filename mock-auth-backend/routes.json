@@ -1,4 +1,4 @@
 {
-  "/auth/posts*": "/posts",
-  "/auth/profile": "/profile"
+  "/auth/profile": "/profile",
+  "/auth/tickets": "/tickets"
 }
