@@ -1,53 +1,28 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
 import { cn, capFirstLetter } from "../../utils";
-import getUser from "../../actions/getUser";
 import "./DashboardLayout.css";
+import { useLoaderData } from "react-router";
 
 export default function DashboardLayout() {
-  const [sessionData, setSessionData] = useState(() => {
-    const data = JSON.parse(sessionStorage.getItem("ticket-app-session"));
-    if (!data) {
-      return {
-        userId: null,
-        token: null,
-      };
-    }
-
-    return data;
-  });
-
-  const { userId, token } = sessionData;
-
-  const [user, setUser] = useState(null);
+  const { user } = useLoaderData();
 
   const navigate = useNavigate();
 
   // Guard: User is not authenticated
   useEffect(() => {
-    if (!userId) {
+    if (!user) {
       navigate("/login");
       return;
     }
-  }, [navigate, userId]);
+  }, [navigate, user]);
 
   const handleLogOut = useCallback(() => {
     sessionStorage.removeItem("ticket-app-token");
-    setSessionData({
-      userId: null,
-      token: null,
-    });
     navigate("/");
   }, [navigate]);
-
-  useEffect(() => {
-    if (!(userId || token)) {
-      return;
-    }
-    getUser(userId, token).then((res) => setUser(res));
-  }, [userId, token]);
 
   const getName = (field) => (user ? user[field] : "");
 
