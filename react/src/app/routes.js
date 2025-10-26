@@ -6,8 +6,6 @@ import Login from "./authentication/Login";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import DashboardSummary from "./dashboard/DashboardSummary";
 import TicketManagement from "./dashboard/TicketManagement";
-import getUser from "../actions/getUser";
-import getTickets from "../actions/getTickets";
 
 export const router = createBrowserRouter([
   {

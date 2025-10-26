@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import useTickets from "../../hooks/useTicket";
 import { FaPlus } from "react-icons/fa";
 import "./TicketManagement.css";
@@ -16,11 +16,21 @@ export default function TicketManagement() {
     initialRender: true,
   });
 
+  // keep the latest refresh function in a ref so the effect won't re-run
+  // when the function identity changes (which can happen if useTickets
+  // returns a new function each render).
+  const refreshRef = useRef(refreshTicketsData);
   useEffect(() => {
-    if (!isCreatingTicket.creating && !isCreatingTicket.initialRender) {
-      refreshTicketsData();
+    refreshRef.current = refreshTicketsData;
+  }, [refreshTicketsData]);
+
+  const { creating, initialRender } = isCreatingTicket;
+  useEffect(() => {
+    if (!creating && !initialRender) {
+      // call the latest refresh function from the ref
+      refreshRef.current();
     }
-  }, [isCreatingTicket, refreshTicketsData]);
+  }, [creating, initialRender]);
 
   useEffect(() => {
     if (ticketsData === null) return;
