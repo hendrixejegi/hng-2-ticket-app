@@ -2,26 +2,57 @@ import { useEffect, useState, useCallback } from "react";
 import { NavLink, useNavigate } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
-import { cn } from "../../utils/cn";
+import { cn, capFirstLetter } from "../../utils";
+import getUser from "../../actions/getUser";
 
 export default function DashboardLayout({ children }) {
-  const [userToken, setUserToken] = useState(
-    sessionStorage.getItem("ticket-app-token"),
-  );
+  const [sessionData, setSessionData] = useState(() => {
+    const data = JSON.parse(sessionStorage.getItem("ticket-app-session"));
+    if (!data) {
+      return {
+        userId: null,
+        token: null,
+      };
+    }
+
+    return data;
+  });
+
+  const { userId, token } = sessionData;
+
+  const [user, setUser] = useState(null);
 
   const navigate = useNavigate();
 
   // Guard: User is not authenticated
   useEffect(() => {
-    if (!userToken) {
+    if (!userId) {
       navigate("/login");
+      return;
     }
-  }, [navigate, userToken]);
+  }, [navigate, userId]);
 
   const handleLogOut = useCallback(() => {
     sessionStorage.removeItem("ticket-app-token");
-    setUserToken(null);
+    setSessionData({
+      userId: null,
+      token: null,
+    });
   }, []);
+
+  useEffect(() => {
+    if (!(userId || token)) {
+      return;
+    }
+    getUser(userId, token).then((res) => setUser(res));
+  }, [userId, token]);
+
+  const getName = (field) => (user ? user[field] : "");
+
+  const firstName = getName("first_name");
+  const lastName = getName("last_name");
+  const userName = firstName + " " + lastName;
+  const userInitials = capFirstLetter(firstName) + capFirstLetter(lastName);
 
   return (
     <div className="wrapper bg-background font-dm text-text min-h-screen p-4">
@@ -78,11 +109,11 @@ export default function DashboardLayout({ children }) {
           <header className="bg-surface rounded-lg p-4">
             <div className="ml-auto flex w-fit items-center gap-4">
               <div>
-                <p className="font-semibold">Hendrix Ejegi</p>
+                <p className="text-right font-semibold">{userName}</p>
                 <p className="text-right text-sm">Administrator</p>
               </div>
               <div className="bg-accent text-surface flex size-12 items-center justify-center rounded-full text-lg font-semibold">
-                HE
+                {userInitials}
               </div>
             </div>
           </header>

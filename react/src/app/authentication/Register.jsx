@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
 import register from "../../actions/register";
-import { checkError, showError } from "../../utils";
+import { checkError, showError, cn } from "../../utils";
+import { FaHome } from "react-icons/fa";
 
 export default function Register() {
   const [state, registerAction] = useActionState(register, {
@@ -130,6 +131,11 @@ export default function Register() {
             Login
           </Link>
         </p>
+        <div className="mt-2 flex justify-center">
+          <Link to="/" className="text-text text-xl">
+            <FaHome />
+          </Link>
+        </div>
       </div>
     </AuthLayout>
   );
@@ -140,7 +146,12 @@ const SubmitButton = () => {
   return (
     <button
       type="submit"
-      className="bg-primary text-surface hover:bg-primary/80 mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold"
+      className={cn(
+        "bg-primary text-surface mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold",
+        status.pending
+          ? "bg-primary/80 hover:cursor-wait"
+          : "hover:bg-primary/80",
+      )}
       disabled={status.pending}
     >
       Register

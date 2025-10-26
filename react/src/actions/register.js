@@ -65,7 +65,13 @@ export default async function register(prevState, formData) {
     // Success
     serverResult.success = true;
     const successData = await response.json();
-    sessionStorage.setItem("ticket-app-token", successData.accessToken);
+    sessionStorage.setItem(
+      "ticket-app-session",
+      JSON.stringify({
+        userId: successData.user.id,
+        token: successData.accessToken,
+      }),
+    );
   } catch (error) {
     console.error("Fetch error:", error);
   }

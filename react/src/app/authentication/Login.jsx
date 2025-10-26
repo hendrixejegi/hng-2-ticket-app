@@ -3,7 +3,8 @@ import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import login from "../../actions/login";
-import { checkError, showError } from "../../utils";
+import { checkError, showError, cn } from "../../utils";
+import { FaHome } from "react-icons/fa";
 
 export default function Login() {
   const [state, loginAction] = useActionState(login, {
@@ -17,6 +18,7 @@ export default function Login() {
 
   if (state.success) {
     navigate("/dashboard");
+    return;
   }
 
   return (
@@ -84,6 +86,11 @@ export default function Login() {
             Register
           </Link>
         </p>
+        <div className="mt-2 flex justify-center">
+          <Link to="/" className="text-text text-xl">
+            <FaHome />
+          </Link>
+        </div>
       </div>
     </AuthLayout>
   );
@@ -94,7 +101,12 @@ const SubmitButton = () => {
   return (
     <button
       type="submit"
-      className="bg-primary text-surface hover:bg-primary/80 mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold"
+      className={cn(
+        "bg-primary text-surface mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold",
+        status.pending
+          ? "bg-primary/80 hover:cursor-wait"
+          : "hover:bg-primary/80",
+      )}
       disabled={status.pending}
     >
       Login
