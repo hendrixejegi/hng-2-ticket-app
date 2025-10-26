@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import useTickets from "../../hooks/useTicket";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
 import "./TicketManagement.css";
 import CreateTicketModal from "../../components/CreateTicketModal";
 
@@ -163,10 +163,26 @@ function TicketCard({ data }) {
       <h3 className="mb-2 text-lg font-semibold">{data.title}</h3>
       <p className="text-gray-500">{data.description}</p>
       <div className="my-2 h-px bg-gray-200/60"></div>
-      <div
-        className={`w-fit rounded-full px-2 py-1 text-xs font-medium uppercase ${result.color}`}
-      >
-        {result.description}
+      <div className="flex items-center justify-between">
+        <div
+          className={`w-fit rounded-full px-2 py-1 text-xs font-medium uppercase ${result.color}`}
+        >
+          {result.description}
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            aria-label={`Edit ${data.title} ticket`}
+            className="hover:text-primary cursor-pointer text-gray-500"
+          >
+            <FaEdit aria-hidden="true" className="text-lg" />
+          </button>
+          <button
+            aria-label={`Delete ${data.title} ticket`}
+            className="hover:text-error cursor-pointer text-gray-500"
+          >
+            <FaTrashAlt aria-hidden="true" className="text-lg" />
+          </button>
+        </div>
       </div>
     </div>
   );
