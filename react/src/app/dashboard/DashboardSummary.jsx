@@ -3,6 +3,7 @@ import { FaTicket, FaRegHourglassHalf, FaCircleCheck } from "react-icons/fa6";
 export default function DashboardSummary() {
   return (
     <div>
+      <h1 className="sr-only">Dashboard ticket summary</h1>
       <div className="flex gap-4">
         <SummaryCard value={1} description="Open Tickets">
           <FaRegHourglassHalf aria-hidden="true" className="text-accent" />

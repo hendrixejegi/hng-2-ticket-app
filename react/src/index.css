@@ -6,6 +6,9 @@
   --accent: #f472b6;
   --background: #f8fafc;
   --surface: #ffffff;
+  --pending: #f59e0b;
+  --gray-200: #9ca3af;
+  --gray-500: #6b7280;
   --text: #0f172a;
   --success: #22c55e;
   --error: #dc2626;
@@ -16,6 +19,9 @@
   --color-accent: var(--accent);
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-pending: var(--pending);
+  --color-gray-200: var(--gray-200);
+  --color-gray-500: var(--gray-500);
   --color-text: var(--text);
   --color-success: var(--success);
   --color-error: var(--error);

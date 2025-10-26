@@ -4,6 +4,7 @@ import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
 import { cn, capFirstLetter } from "../../utils";
 import getUser from "../../actions/getUser";
+import "./DashboardLayout.css";
 
 export default function DashboardLayout() {
   const [sessionData, setSessionData] = useState(() => {
@@ -56,9 +57,9 @@ export default function DashboardLayout() {
   const userInitials = capFirstLetter(firstName) + capFirstLetter(lastName);
 
   return (
-    <div className="wrapper bg-background font-dm text-text min-h-screen p-4">
-      <div className="grid grid-cols-[280px_1fr] gap-4">
-        <aside className="bg-surface flex flex-col justify-between rounded-lg p-4">
+    <div className="wrapper bg-background font-dm text-text h-screen">
+      <div className="dashboard">
+        <aside className="bg-surface dashboard_sidebar flex h-full flex-col justify-between rounded-lg p-4">
           <div className="space-y-8">
             <Logo />
             <div>
@@ -68,6 +69,7 @@ export default function DashboardLayout() {
                   <li>
                     <NavLink
                       to="/dashboard"
+                      end
                       className={({ isActive }) =>
                         cn(
                           "flex items-center gap-2 rounded-lg px-4 py-2.5",
@@ -82,7 +84,7 @@ export default function DashboardLayout() {
                   </li>
                   <li>
                     <NavLink
-                      to="/tickets"
+                      to="/dashboard/tickets"
                       className={({ isActive }) =>
                         cn(
                           "flex items-center gap-2 rounded-lg px-4 py-2.5",
@@ -106,21 +108,19 @@ export default function DashboardLayout() {
             Log Out
           </button>
         </aside>
-        <main className="flex flex-col gap-4">
-          <header className="bg-surface rounded-lg p-4">
-            <div className="ml-auto flex w-fit items-center gap-4">
-              <div>
-                <p className="text-right font-semibold">{userName}</p>
-                <p className="text-right text-sm">Administrator</p>
-              </div>
-              <div className="bg-accent text-surface flex size-12 items-center justify-center rounded-full text-lg font-semibold">
-                {userInitials}
-              </div>
+        <header className="dashboard_header bg-surface mb-4 rounded-lg p-4">
+          <div className="ml-auto flex w-fit items-center gap-4">
+            <div>
+              <p className="text-right font-semibold">{userName}</p>
+              <p className="text-right text-sm">Administrator</p>
             </div>
-          </header>
-          <div className="bg-surface grow rounded-lg p-4">
-            <Outlet />
+            <div className="bg-accent text-surface flex size-12 items-center justify-center rounded-full text-lg font-semibold">
+              {userInitials}
+            </div>
           </div>
+        </header>
+        <main className="dashboard_main bg-surface flex h-full grow flex-col rounded-lg p-4">
+          <Outlet />
         </main>
       </div>
     </div>

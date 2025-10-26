@@ -5,6 +5,7 @@ import Register from "./authentication/Register";
 import Login from "./authentication/Login";
 import DashboardLayout from "./dashboard/DashboardLayout";
 import DashboardSummary from "./dashboard/DashboardSummary";
+import TicketManagement from "./dashboard/TicketManagement";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,9 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     Component: DashboardLayout,
-    children: [{ index: true, Component: DashboardSummary }],
+    children: [
+      { index: true, Component: DashboardSummary },
+      { path: "/dashboard/tickets", Component: TicketManagement },
+    ],
   },
 ]);
