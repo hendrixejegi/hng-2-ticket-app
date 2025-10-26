@@ -1,7 +1,48 @@
+import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import "./TicketManagement.css";
+import { useLoaderData } from "react-router";
 
 export default function TicketManagement() {
+  const { ticketsData } = useLoaderData();
+  const [data, setData] = useState(ticketsData);
+  const [sortedData, setSortedData] = useState({
+    open: [],
+    progress: [],
+    closed: [],
+  });
+
+  useEffect(() => {
+    const openTickets = [];
+    const progressTickets = [];
+    const closedTickets = [];
+
+    for (let ticket of data) {
+      const { status } = ticket;
+
+      switch (status) {
+        case 0:
+          closedTickets.push(ticket);
+          break;
+        case 1:
+          progressTickets.push(ticket);
+          break;
+        case 2:
+          openTickets.push(ticket);
+          break;
+
+        default:
+          break;
+      }
+    }
+
+    setSortedData({
+      open: openTickets,
+      progress: progressTickets,
+      closed: closedTickets,
+    });
+  }, [data]);
+
   return (
     <div className="ticket-management">
       <h1 className="sr-only">Dashboard ticket management</h1>
@@ -36,20 +77,29 @@ export default function TicketManagement() {
       </div>
       <div className="ticket-management_groups">
         {/* Open group */}
-        <div
-          className="ticket-group space-y-4"
-          aria-labelledby="open-group"
-        ></div>
+        <div className="ticket-group space-y-4" aria-labelledby="open-group">
+          {isArray(sortedData.open) &&
+            sortedData.open.map((ticket) => (
+              <TicketCard key={ticket.id} data={ticket} />
+            ))}
+        </div>
         {/* In progress group */}
         <div
           className="ticket-group space-y-4"
           aria-labelledby="in-progress-group"
-        ></div>
+        >
+          {isArray(sortedData.progress) &&
+            sortedData.progress.map((ticket) => (
+              <TicketCard key={ticket.id} data={ticket} />
+            ))}
+        </div>
         {/* Closed group */}
-        <div
-          className="ticket-group space-y-4"
-          aria-labelledby="closed-group"
-        ></div>
+        <div className="ticket-group space-y-4" aria-labelledby="closed-group">
+          {isArray(sortedData.closed) &&
+            sortedData.closed.map((ticket) => (
+              <TicketCard key={ticket.id} data={ticket} />
+            ))}
+        </div>
       </div>
     </div>
   );
@@ -72,7 +122,7 @@ function TicketCard({ data }) {
 }
 
 const resolveTicketPriority = (code) => {
-  switch (code) {
+  switch (Number(code)) {
     case 0:
       return { color: "bg-gray-500/10 text-gray-500", description: "LOW" };
     case 1:
@@ -84,3 +134,5 @@ const resolveTicketPriority = (code) => {
       break;
   }
 };
+
+const isArray = (obj) => Array.isArray(obj) && obj.length > 0;
