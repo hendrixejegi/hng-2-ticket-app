@@ -4,7 +4,7 @@ import editTicket from "../actions/editTicket";
 import { cn } from "../utils";
 import { FaTimes } from "react-icons/fa";
 
-const EditTicketModal = ({ data, closeModal }) => {
+const EditTicketModal = ({ data, closeModal, notify }) => {
   const [state, editTicketAction] = useActionState(editTicket, {
     success: false,
     message: null,
@@ -41,6 +41,7 @@ const EditTicketModal = ({ data, closeModal }) => {
   }, []);
 
   if (state.success) {
+    notify();
     closeModal();
     return;
   }

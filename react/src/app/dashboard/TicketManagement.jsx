@@ -1,18 +1,33 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import useTickets from "../../hooks/useTicket";
-import { FaPlus, FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import "./TicketManagement.css";
 import CreateTicketModal from "../../components/CreateTicketModal";
 import EditTicketModal from "../../components/EditTicketModal";
 import DeleteTicketModal from "../../components/DeleteTicketModal";
+import TicketCard from "../../components/TicketCard";
+import { ToastContainer, toast } from "react-toastify";
+
+const toastOptions = {
+  position: "bottom-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+};
 
 export default function TicketManagement() {
   const [ticketsData, refreshTicketsData] = useTickets();
+
   const [sortedData, setSortedData] = useState({
     open: [],
     progress: [],
     closed: [],
   });
+
   const [actionState, setActionState] = useState({
     creating: false,
     editing: false,
@@ -188,6 +203,7 @@ export default function TicketManagement() {
           closeModal={() =>
             setActionState((prev) => ({ ...prev, creating: false }))
           }
+          notify={() => toast("Ticket created", toastOptions)}
         />
       )}
       {/* Edit modal */}
@@ -201,6 +217,7 @@ export default function TicketManagement() {
               ticket: null,
             }))
           }
+          notify={() => toast("Changes saved", toastOptions)}
         />
       )}
       {/* Delete modal */}
@@ -214,80 +231,10 @@ export default function TicketManagement() {
               ticket: null,
             }))
           }
+          notify={() => toast("Ticket deleted", toastOptions)}
         />
       )}
-    </div>
-  );
-}
-
-function TicketCard({ data, editTicket, deleteTicket }) {
-  const resolveTicketPriority = useCallback((code) => {
-    switch (code) {
-      case 0:
-        return { color: "bg-gray-500/10 text-gray-500", description: "LOW" };
-      case 1:
-        return { color: "bg-pending/10 text-pending", description: "MEDIUM" };
-      case 2:
-        return { color: "bg-error/10 text-error", description: "HIGH" };
-
-      default:
-        break;
-    }
-  }, []);
-
-  const resolveTicketStatus = useCallback((code) => {
-    switch (code) {
-      case 0:
-        return { color: "bg-gray-500 text-gray-500", description: "CLOSED" };
-      case 1:
-        return {
-          color: "bg-pending text-pending",
-          description: "IN PROGRESS",
-        };
-      case 2:
-        return { color: "bg-success text-success", description: "OPEN" };
-
-      default:
-        break;
-    }
-  }, []);
-
-  const priorityResult = resolveTicketPriority(data.priority);
-  const statusResult = resolveTicketStatus(data.status);
-
-  return (
-    <div className="bg-background rounded-lg p-4">
-      <h3 className="mb-2 text-lg font-semibold">{data.title}</h3>
-      <p className="text-gray-500">{data.description}</p>
-      <div className="my-2 h-px bg-gray-200/60"></div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div
-            className={`w-fit rounded-full px-2 py-1 text-xs font-medium uppercase ${priorityResult.color}`}
-          >
-            {priorityResult.description}
-          </div>
-          <div
-            className={`block size-2 animate-pulse rounded-full md:hidden ${statusResult.color}`}
-          ></div>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            aria-label={`Edit ${data.title} ticket`}
-            className="hover:text-primary cursor-pointer text-gray-500"
-            onClick={editTicket}
-          >
-            <FaEdit aria-hidden="true" className="text-lg" />
-          </button>
-          <button
-            aria-label={`Delete ${data.title} ticket`}
-            className="hover:text-error cursor-pointer text-gray-500"
-            onClick={deleteTicket}
-          >
-            <FaTrashAlt aria-hidden="true" className="text-lg" />
-          </button>
-        </div>
-      </div>
+      <ToastContainer />
     </div>
   );
 }
