@@ -22,7 +22,7 @@ const toastOptions = {
 };
 
 export default function TicketManagement() {
-  const [ticketsData, refreshTicketsData] = useTickets();
+  const [ticketsData, refreshTicketsData, isFetching] = useTickets();
 
   const [sortedData, setSortedData] = useState({
     open: [],
@@ -37,6 +37,69 @@ export default function TicketManagement() {
     initialRender: true,
     ticket: null,
   });
+
+  const [mobileFilter, setMobileFilter] = useState({
+    value: "0",
+    filteredTickets: ticketsData,
+    initialRender: true,
+  });
+
+  const initialMobileFilterSetRef = useRef(false);
+  useEffect(() => {
+    // only run once: after the first successful fetch of ticketsData
+    if (initialMobileFilterSetRef.current) return;
+    if (isFetching) return;
+    if (!ticketsData) return;
+
+    setMobileFilter((prev) => ({
+      ...prev,
+      filteredTickets: ticketsData,
+      initialRender: false,
+    }));
+    initialMobileFilterSetRef.current = true;
+  }, [isFetching, ticketsData]);
+
+  const updateMobileFilter = (event) => {
+    const value = event.target.value;
+
+    switch (value) {
+      case "0":
+        setMobileFilter((prev) => ({
+          ...prev,
+          filteredTickets: ticketsData,
+          value,
+        }));
+        break;
+      case "1":
+        setMobileFilter((prev) => ({
+          ...prev,
+          filteredTickets: sortedData.open,
+          value,
+        }));
+        break;
+      case "2":
+        setMobileFilter((prev) => ({
+          ...prev,
+          filteredTickets: sortedData.progress,
+          value,
+        }));
+        break;
+      case "3":
+        setMobileFilter((prev) => ({
+          ...prev,
+          filteredTickets: sortedData.closed,
+          value,
+        }));
+        break;
+      default:
+        setMobileFilter((prev) => ({
+          ...prev,
+          filteredTickets: ticketsData,
+          value,
+        }));
+        break;
+    }
+  };
 
   useEffect(() => {
     if (ticketsData === null) return;
@@ -111,7 +174,7 @@ export default function TicketManagement() {
   return (
     <div className="ticket-management">
       <h1 className="sr-only">Dashboard ticket management</h1>
-      <div>
+      <div className="flex items-center">
         <button
           className="bg-primary text-surface hover:bg-primary/80 flex cursor-pointer items-center gap-2 rounded-lg px-4 py-3"
           onClick={() =>
@@ -121,6 +184,18 @@ export default function TicketManagement() {
           <FaPlus aria-hidden="true" />
           <span>Create Ticket</span>
         </button>
+        <select
+          name="mobile-filter"
+          id="mobile-filter"
+          className="ml-auto border-0 outline-0 md:hidden"
+          defaultValue={mobileFilter.value}
+          onChange={updateMobileFilter}
+        >
+          <option value="0">All</option>
+          <option value="1">Open</option>
+          <option value="2">In Progress</option>
+          <option value="3">Closed</option>
+        </select>
       </div>
       {/* Group titles */}
       <div className="hidden grid-cols-3 gap-4 md:grid">
@@ -189,8 +264,8 @@ export default function TicketManagement() {
       </div>
       {/* Ticket view small screen */}
       <div className="mt-4 space-y-4 md:hidden">
-        {isArray(ticketsData) &&
-          ticketsData.map((ticket) => (
+        {isArray(mobileFilter.filteredTickets) &&
+          mobileFilter.filteredTickets.map((ticket) => (
             <TicketCard
               key={ticket.id}
               data={ticket}
