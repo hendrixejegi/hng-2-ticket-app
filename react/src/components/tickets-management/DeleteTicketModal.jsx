@@ -1,7 +1,7 @@
 import { useState } from "react";
-import deleteTicket from "../actions/deleteTicket";
+import deleteTicket from "../../actions/deleteTicket";
 
-const DeleteTicketModal = ({ data, closeModal, notify }) => {
+export const DeleteTicketModal = ({ data, closeModal, notify }) => {
   const [success, setSuccess] = useState(false);
 
   if (success) {
@@ -36,5 +36,3 @@ const DeleteTicketModal = ({ data, closeModal, notify }) => {
     </div>
   );
 };
-
-export default DeleteTicketModal;

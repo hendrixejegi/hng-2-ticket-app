@@ -1,19 +1,18 @@
 import { useState, useCallback, useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import editTicket from "../actions/editTicket";
-import { cn } from "../utils";
+import createTicket from "../../actions/createTicket";
+import { cn } from "../../utils";
 import { FaTimes } from "react-icons/fa";
 
-const EditTicketModal = ({ data, closeModal, notify }) => {
-  const [state, editTicketAction] = useActionState(editTicket, {
+export const CreateTicketModal = ({ closeModal, notify }) => {
+  const [state, createTicketAction] = useActionState(createTicket, {
     success: false,
     message: null,
     data: {
-      id: data.id,
-      title: data.title,
-      description: data.description,
-      status: data.status,
-      priority: data.priority,
+      title: "",
+      description: "",
+      status: "2",
+      priority: "0",
     },
   });
 
@@ -50,7 +49,7 @@ const EditTicketModal = ({ data, closeModal, notify }) => {
     <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20 p-4">
       <div className="bg-surface mx-auto w-full max-w-lg overflow-hidden rounded-lg shadow-xl">
         <div className="bg-primary text-surface flex items-center justify-between p-4">
-          <h2 className="text-2xl font-bold">Edit ticket</h2>
+          <h2 className="text-2xl font-bold">Create new ticket</h2>
           <button
             aria-label="Close create ticket modal"
             className="cursor-pointer"
@@ -60,17 +59,10 @@ const EditTicketModal = ({ data, closeModal, notify }) => {
           </button>
         </div>
         <form
-          action={editTicketAction}
+          action={createTicketAction}
           className="bg-surface space-y-2 p-4"
           noValidate
         >
-          <input
-            type="text"
-            name="id"
-            id="id"
-            defaultValue={state.data.id}
-            className="sr-only"
-          />
           <div className="flex flex-col gap-2">
             <label htmlFor="title" className="font-semibold">
               Title*:
@@ -110,7 +102,7 @@ const EditTicketModal = ({ data, closeModal, notify }) => {
                 id="status"
                 className="border-primary outline-primary resize-none rounded-lg border-2 py-2.5"
                 required
-                defaultValue={state.data.status}
+                defaultValue="2"
               >
                 <option value="0">Closed</option>
                 <option value="1">In progress</option>
@@ -126,7 +118,7 @@ const EditTicketModal = ({ data, closeModal, notify }) => {
                 id="priority"
                 className="border-primary outline-primary resize-none rounded-lg border-2 py-2.5"
                 required
-                defaultValue={state.data.priority}
+                defaultValue="0"
               >
                 <option value="0">Low</option>
                 <option value="1">Medium</option>
@@ -146,8 +138,6 @@ const EditTicketModal = ({ data, closeModal, notify }) => {
   );
 };
 
-export default EditTicketModal;
-
 const Submit = () => {
   const status = useFormStatus();
 
@@ -161,7 +151,7 @@ const Submit = () => {
       )}
       disabled={status.pending}
     >
-      Save Changes
+      Add Ticket
     </button>
   );
 };

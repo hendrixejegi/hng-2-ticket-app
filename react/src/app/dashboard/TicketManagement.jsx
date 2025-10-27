@@ -2,10 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import useTickets from "../../hooks/useTicket";
 import { FaPlus } from "react-icons/fa";
 import "./TicketManagement.css";
-import CreateTicketModal from "../../components/CreateTicketModal";
-import EditTicketModal from "../../components/EditTicketModal";
-import DeleteTicketModal from "../../components/DeleteTicketModal";
-import TicketCard from "../../components/TicketCard";
+import {
+  CreateTicketModal,
+  EditTicketModal,
+  DeleteTicketModal,
+  TicketCard,
+} from "../../components/tickets-management";
 import { ToastContainer, toast } from "react-toastify";
 
 const toastOptions = {
