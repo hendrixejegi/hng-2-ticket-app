@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import getUser from "../actions/getUser";
-import { getSession, capFirstLetter } from "../utils";
+import { capFirstLetter } from "../utils";
 
-const UserInfo = () => {
-  const session = getSession();
+const UserInfo = ({ session }) => {
   const [user, setUser] = useState(null);
 
   // Fetch user info

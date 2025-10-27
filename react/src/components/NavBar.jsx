@@ -35,7 +35,7 @@ const NavBar = ({ session, logout }) => {
                 className="cursor-pointer"
                 onClick={() => setShowOptions((prev) => !prev)}
               >
-                <UserInfo />
+                <UserInfo session={session} />
               </button>
               {showOptions && (
                 <div className="bg-surface absolute left-0 isolate z-50 mt-4 flex w-full flex-col items-center rounded-lg p-4 shadow-xl">
