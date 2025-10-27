@@ -55,8 +55,8 @@ export default async function login(prevState, formData) {
     // Success
     serverResult.success = true;
     const successData = await response.json();
-    sessionStorage.setItem(
-      "ticket-app-session",
+    localStorage.setItem(
+      "ticketapp_session",
       JSON.stringify({
         userId: successData.user.id,
         token: successData.accessToken,

@@ -19,7 +19,7 @@ export default function DashboardLayout() {
   // Guard: User is not authenticated
   useEffect(() => {
     if (session === null) {
-      sessionStorage.removeItem("ticket-app-session");
+      localStorage.removeItem("ticketapp_session");
       navigate("/");
       return;
     }
