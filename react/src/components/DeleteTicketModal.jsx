@@ -1,10 +1,11 @@
 import { useState } from "react";
 import deleteTicket from "../actions/deleteTicket";
 
-const DeleteTicketModal = ({ data, closeModal }) => {
+const DeleteTicketModal = ({ data, closeModal, notify }) => {
   const [success, setSuccess] = useState(false);
 
   if (success) {
+    notify();
     closeModal();
     return;
   }

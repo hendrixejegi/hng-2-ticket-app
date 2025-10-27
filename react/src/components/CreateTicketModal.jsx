@@ -4,7 +4,7 @@ import createTicket from "../actions/createTicket";
 import { cn } from "../utils";
 import { FaTimes } from "react-icons/fa";
 
-const CreateTicketModal = ({ closeModal }) => {
+const CreateTicketModal = ({ closeModal, notify }) => {
   const [state, createTicketAction] = useActionState(createTicket, {
     success: false,
     message: null,
@@ -40,6 +40,7 @@ const CreateTicketModal = ({ closeModal }) => {
   }, []);
 
   if (state.success) {
+    notify();
     closeModal();
     return;
   }

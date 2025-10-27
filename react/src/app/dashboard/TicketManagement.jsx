@@ -5,14 +5,28 @@ import "./TicketManagement.css";
 import CreateTicketModal from "../../components/CreateTicketModal";
 import EditTicketModal from "../../components/EditTicketModal";
 import DeleteTicketModal from "../../components/DeleteTicketModal";
+import { ToastContainer, toast } from "react-toastify";
+
+const toastOptions = {
+  position: "bottom-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+};
 
 export default function TicketManagement() {
   const [ticketsData, refreshTicketsData] = useTickets();
+
   const [sortedData, setSortedData] = useState({
     open: [],
     progress: [],
     closed: [],
   });
+
   const [actionState, setActionState] = useState({
     creating: false,
     editing: false,
@@ -188,6 +202,7 @@ export default function TicketManagement() {
           closeModal={() =>
             setActionState((prev) => ({ ...prev, creating: false }))
           }
+          notify={() => toast("Ticket created", toastOptions)}
         />
       )}
       {/* Edit modal */}
@@ -201,6 +216,7 @@ export default function TicketManagement() {
               ticket: null,
             }))
           }
+          notify={() => toast("Changes saved", toastOptions)}
         />
       )}
       {/* Delete modal */}
@@ -214,8 +230,10 @@ export default function TicketManagement() {
               ticket: null,
             }))
           }
+          notify={() => toast("Ticket deleted", toastOptions)}
         />
       )}
+      <ToastContainer />
     </div>
   );
 }
