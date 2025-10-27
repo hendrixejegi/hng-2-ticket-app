@@ -27,8 +27,7 @@ export default function DashboardLayout() {
   const handleLogOut = useCallback(() => {
     sessionStorage.removeItem("ticket-app-token");
     setSession(null);
-    navigate("/");
-  }, [navigate]);
+  }, []);
 
   return (
     <div className="wrapper bg-background font-dm text-text h-screen">
