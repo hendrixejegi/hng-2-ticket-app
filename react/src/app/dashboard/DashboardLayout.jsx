@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, Link } from "react-router";
 import Logo from "../../components/Logo";
 import { FaChartPie, FaTicket } from "react-icons/fa6";
@@ -19,15 +19,15 @@ export default function DashboardLayout() {
   // Guard: User is not authenticated
   useEffect(() => {
     if (session === null) {
-      navigate("/login");
+      sessionStorage.removeItem("ticket-app-session");
+      navigate("/");
       return;
     }
   }, [navigate, session]);
 
-  const handleLogOut = useCallback(() => {
-    sessionStorage.removeItem("ticket-app-token");
+  const handleLogOut = () => {
     setSession(null);
-  }, []);
+  };
 
   return (
     <div className="wrapper bg-background font-dm text-text h-screen">
@@ -161,7 +161,7 @@ export default function DashboardLayout() {
               </nav>
             </div>
           </div>
-          <UserInfo />
+          <UserInfo session={session} />
         </header>
         <main className="dashboard_main bg-surface flex h-full grow flex-col rounded-lg p-4">
           <Outlet />
