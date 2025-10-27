@@ -106,7 +106,7 @@ export default function DashboardLayout() {
             aria-controls="mobile-nav-container"
             aria-expanded={showMobileNav}
             onClick={() => setShowMobileNav((prev) => !prev)}
-            className="isolate z-60"
+            className="isolate z-60 md:hidden"
           >
             {showMobileNav ? (
               <FaTimes aria-hidden="true" className="text-2xl" />
@@ -159,6 +159,13 @@ export default function DashboardLayout() {
                   </li>
                 </ul>
               </nav>
+              <button
+                className="text-error flex items-center justify-center gap-2 rounded-lg px-4 py-3 font-semibold"
+                onClick={handleLogOut}
+                aria-label="Log out"
+              >
+                Log Out
+              </button>
             </div>
           </div>
           <UserInfo session={session} />
