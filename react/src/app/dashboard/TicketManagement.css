@@ -1,20 +1,33 @@
 .ticket-management {
-  display: grid;
-  grid-template: auto auto 1fr / 1fr;
-  height: 100%;
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 .ticket-management_groups {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  height: 100%;
-  overflow-y: auto;
-  gap: 16px;
+  display: none;
 }
 
 .ticket-group {
   overflow-y: auto;
   padding-right: 8px;
   scrollbar-width: thin;
+}
+
+@media screen and (min-width: 768px) {
+  .ticket-management {
+    display: grid;
+    grid-template: auto auto 1fr / 1fr;
+    height: 100%;
+    gap: 16px;
+    overflow-y: hidden;
+  }
+
+  .ticket-management_groups {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    height: 100%;
+    overflow-y: auto;
+    gap: 16px;
+  }
 }

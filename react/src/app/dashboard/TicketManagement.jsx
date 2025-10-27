@@ -96,7 +96,7 @@ export default function TicketManagement() {
       <h1 className="sr-only">Dashboard ticket management</h1>
       <div>
         <button
-          className="bg-primary text-surface hover:bg-primary/80 flex w-[180px] cursor-pointer items-center gap-2 rounded-lg px-4 py-3"
+          className="bg-primary text-surface hover:bg-primary/80 flex cursor-pointer items-center gap-2 rounded-lg px-4 py-3"
           onClick={() =>
             setActionState((prev) => ({ ...prev, creating: true }))
           }
@@ -105,7 +105,8 @@ export default function TicketManagement() {
           <span>Create Ticket</span>
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-4">
+      {/* Group titles */}
+      <div className="hidden grid-cols-3 gap-4 md:grid">
         <h2
           className="bg-background text-success mr-2 rounded-lg px-4 py-2.5 font-semibold"
           aria-label="Opened tickets"
@@ -169,6 +170,18 @@ export default function TicketManagement() {
             ))}
         </div>
       </div>
+      {/* Ticket view small screen */}
+      <div className="mt-4 space-y-4 md:hidden">
+        {isArray(ticketsData) &&
+          ticketsData.map((ticket) => (
+            <TicketCard
+              key={ticket.id}
+              data={ticket}
+              editTicket={() => handleEditTicket(ticket.id)}
+              deleteTicket={() => handleDeleteTicket(ticket.id)}
+            />
+          ))}
+      </div>
       {/* Create modal */}
       {actionState.creating && (
         <CreateTicketModal
@@ -222,7 +235,25 @@ function TicketCard({ data, editTicket, deleteTicket }) {
     }
   }, []);
 
-  const result = resolveTicketPriority(data.priority);
+  const resolveTicketStatus = useCallback((code) => {
+    switch (code) {
+      case 0:
+        return { color: "bg-gray-500 text-gray-500", description: "CLOSED" };
+      case 1:
+        return {
+          color: "bg-pending text-pending",
+          description: "IN PROGRESS",
+        };
+      case 2:
+        return { color: "bg-success text-success", description: "OPEN" };
+
+      default:
+        break;
+    }
+  }, []);
+
+  const priorityResult = resolveTicketPriority(data.priority);
+  const statusResult = resolveTicketStatus(data.status);
 
   return (
     <div className="bg-background rounded-lg p-4">
@@ -230,10 +261,15 @@ function TicketCard({ data, editTicket, deleteTicket }) {
       <p className="text-gray-500">{data.description}</p>
       <div className="my-2 h-px bg-gray-200/60"></div>
       <div className="flex items-center justify-between">
-        <div
-          className={`w-fit rounded-full px-2 py-1 text-xs font-medium uppercase ${result.color}`}
-        >
-          {result.description}
+        <div className="flex items-center gap-2">
+          <div
+            className={`w-fit rounded-full px-2 py-1 text-xs font-medium uppercase ${priorityResult.color}`}
+          >
+            {priorityResult.description}
+          </div>
+          <div
+            className={`block size-2 animate-pulse rounded-full md:hidden ${statusResult.color}`}
+          ></div>
         </div>
         <div className="flex items-center gap-2">
           <button

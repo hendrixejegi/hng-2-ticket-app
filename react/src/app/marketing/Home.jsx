@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { useNavigate } from "react-router";
-import { cn } from "../../utils/cn";
+import { useNavigate, useOutletContext } from "react-router";
+import { cn } from "../../utils";
 
 const featuresList = [
   {
@@ -31,6 +31,7 @@ const featuresList = [
 ];
 
 export default function Home() {
+  const { session } = useOutletContext();
   return (
     <div>
       {/* Hero section */}
@@ -42,18 +43,31 @@ export default function Home() {
           <span className="text-primary">Resolve</span> in One Smart Dashboard.
         </h1>
         <div className="flex flex-col items-center gap-4 md:flex-row">
-          <CTAButton
-            to={"/login"}
-            className="text-primary hover:text-primary/80"
-          >
-            Login
-          </CTAButton>
-          <CTAButton
-            to={"/register"}
-            className="bg-primary text-surface hover:bg-primary/80"
-          >
-            Get Started
-          </CTAButton>
+          {session ? (
+            <Link to="/dashboard">
+              <CTAButton
+                to={"/register"}
+                className="bg-primary text-surface hover:bg-primary/80"
+              >
+                View Dashboard
+              </CTAButton>
+            </Link>
+          ) : (
+            <>
+              <CTAButton
+                to={"/login"}
+                className="text-primary hover:text-primary/80"
+              >
+                Login
+              </CTAButton>
+              <CTAButton
+                to={"/register"}
+                className="bg-primary text-surface hover:bg-primary/80"
+              >
+                Get Started
+              </CTAButton>
+            </>
+          )}
         </div>
       </div>
       {/* Features section */}

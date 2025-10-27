@@ -1,10 +1,10 @@
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
 import register from "../../actions/register";
-import { checkError, showError, cn } from "../../utils";
+import { checkError, showError, cn, getSession } from "../../utils";
 import { FaHome } from "react-icons/fa";
 
 export default function Register() {
@@ -16,6 +16,16 @@ export default function Register() {
   });
 
   const navigate = useNavigate();
+
+  const session = getSession();
+
+  // Guard: Authenticated user
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+      return;
+    }
+  }, [session, navigate]);
 
   if (state.success) {
     navigate("/dashboard");

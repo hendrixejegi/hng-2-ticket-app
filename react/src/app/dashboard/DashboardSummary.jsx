@@ -16,7 +16,7 @@ export default function DashboardSummary() {
   return (
     <div>
       <h1 className="sr-only">Dashboard ticket summary</h1>
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         <SummaryCard
           value={ticketsSummary?.open ?? 0}
           description="Open Tickets"

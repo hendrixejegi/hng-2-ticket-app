@@ -1,9 +1,9 @@
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import login from "../../actions/login";
-import { checkError, showError, cn } from "../../utils";
+import { checkError, showError, cn, getSession } from "../../utils";
 import { FaHome } from "react-icons/fa";
 
 export default function Login() {
@@ -13,8 +13,17 @@ export default function Login() {
     fieldErrors: null,
     data: { email: "", password: "" },
   });
-
   const navigate = useNavigate();
+
+  const session = getSession();
+
+  // Guard: Authenticated user
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+      return;
+    }
+  }, [session, navigate]);
 
   if (state.success) {
     navigate("/dashboard");
@@ -26,11 +35,10 @@ export default function Login() {
       <div className="bg-surface max-w-lg rounded-lg p-4 shadow-xl">
         <hgroup>
           <h1 className="font-dm text-primary mb-2 text-center text-3xl font-bold">
-            Create Your QueueUp Account
+            Welcome Back to QueueUp
           </h1>
           <p className="font-dm text-text text-center">
-            Sign up to manage your tickets, track progress, and stay in control
-            — it only takes a minute.
+            Log in to manage your tickets, track updates, and stay organized.
           </p>
         </hgroup>
         <form action={loginAction} className="font-dm mt-8" noValidate>

@@ -46,7 +46,7 @@ const EditTicketModal = ({ data, closeModal }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20">
+    <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20 p-4">
       <div className="bg-surface mx-auto w-full max-w-lg overflow-hidden rounded-lg shadow-xl">
         <div className="bg-primary text-surface flex items-center justify-between p-4">
           <h2 className="text-2xl font-bold">Edit ticket</h2>

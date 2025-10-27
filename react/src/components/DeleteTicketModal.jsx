@@ -14,8 +14,8 @@ const DeleteTicketModal = ({ data, closeModal }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20">
-      <div className="bg-surface mx-auto w-full max-w-lg overflow-hidden rounded-lg py-20 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center bg-gray-200/20 p-4">
+      <div className="bg-surface mx-auto w-full max-w-lg overflow-hidden rounded-lg p-4 py-20 shadow-xl">
         <p className="text-center">Confirm delete?</p>
         <div className="mt-8 flex items-center justify-center gap-4">
           <button
