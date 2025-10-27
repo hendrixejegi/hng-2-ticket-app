@@ -8,7 +8,7 @@ import { getSession } from "../../utils";
 export default function MarketingRoot() {
   const [session, setSession] = useState(getSession());
   const clearSession = () => {
-    sessionStorage.removeItem("ticket-app-session");
+    localStorage.removeItem("ticketapp_session");
     setSession(null);
   };
   return (

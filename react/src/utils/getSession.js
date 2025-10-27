@@ -1,2 +1,2 @@
 export const getSession = () =>
-  JSON.parse(sessionStorage.getItem("ticket-app-session"));
+  JSON.parse(localStorage.getItem("ticketapp_session"));
