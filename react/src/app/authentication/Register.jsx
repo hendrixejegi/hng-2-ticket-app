@@ -1,8 +1,37 @@
-import { Link } from "react-router";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
+import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
 import "./Authentication.css";
+import register from "../../actions/register";
+import { checkError, showError, cn, getSession } from "../../utils";
+import { FaHome } from "react-icons/fa";
 
 export default function Register() {
+  const [state, registerAction] = useActionState(register, {
+    success: undefined,
+    message: null,
+    fieldErrors: null,
+    data: { first_name: "", last_name: "", email: "", password: "" },
+  });
+
+  const navigate = useNavigate();
+
+  const session = getSession();
+
+  // Guard: Authenticated user
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard");
+      return;
+    }
+  }, [session, navigate]);
+
+  if (state.success) {
+    navigate("/dashboard");
+    return;
+  }
+
   return (
     <AuthLayout>
       <div className="bg-surface max-w-lg rounded-lg p-4 shadow-xl">
@@ -15,41 +44,51 @@ export default function Register() {
             — it only takes a minute.
           </p>
         </hgroup>
-        <form action="" className="font-dm mt-8" noValidate>
+        <form action={registerAction} className="font-dm mt-8" noValidate>
           <fieldset className="space-y-4">
             <legend className="sr-only">User Details</legend>
-            <div className="flex flex-col items-center gap-4 md:flex-row">
+            <div className="flex flex-col gap-4 md:flex-row">
               <div className="input-group">
-                <label htmlFor="first-name">First Name*:</label>
+                <label htmlFor="first_name">First Name*:</label>
                 <input
                   type="text"
-                  id="first-name"
-                  name="first-name"
+                  id="first_name"
+                  name="first_name"
                   placeholder="John"
-                  aria-describedby="first-name-error"
+                  aria-describedby="first_name_error"
                   required
+                  defaultValue={state.data.first_name}
                 />
-                <span
-                  id="first-name-error"
-                  className="error"
-                  aria-live="polite"
-                ></span>
+                {checkError("first_name", state) && (
+                  <span
+                    id="first_name_error"
+                    className="error"
+                    aria-live="polite"
+                  >
+                    {showError("first_name", state)}
+                  </span>
+                )}
               </div>
               <div className="input-group">
-                <label htmlFor="last-name">Last Name*:</label>
+                <label htmlFor="last_name">Last Name*:</label>
                 <input
                   type="text"
-                  id="last-name"
-                  name="last-name"
+                  id="last_name"
+                  name="last_name"
                   placeholder="Doe"
-                  aria-describedby="last-name-error"
+                  aria-describedby="last_name_error"
                   required
+                  defaultValue={state.data.last_name}
                 />
-                <span
-                  id="last-name-error"
-                  className="error"
-                  aria-live="polite"
-                ></span>
+                {checkError("last_name", state) && (
+                  <span
+                    id="last_name_error"
+                    className="error"
+                    aria-live="polite"
+                  >
+                    {showError("last_name", state)}
+                  </span>
+                )}
               </div>
             </div>
             <div className="input-group">
@@ -61,12 +100,13 @@ export default function Register() {
                 placeholder="johndoe@example.com"
                 aria-describedby="email-error"
                 required
+                defaultValue={state.data.email}
               />
-              <span
-                id="email-error"
-                className="error"
-                aria-live="polite"
-              ></span>
+              {checkError("email", state) && (
+                <span id="email-error" className="error" aria-live="polite">
+                  {showError("email", state)}
+                </span>
+              )}
             </div>
             <div className="input-group">
               <label htmlFor="password">Password*:</label>
@@ -74,23 +114,23 @@ export default function Register() {
                 type="password"
                 id="password"
                 name="password"
-                placeholder="johndoe@example.com"
                 aria-describedby="password-error"
                 required
+                defaultValue={state.data.password}
               />
-              <span
-                id="password-error"
-                className="error"
-                aria-live="polite"
-              ></span>
+              {checkError("password", state) && (
+                <span id="password-error" className="error" aria-live="polite">
+                  {showError("password", state)}
+                </span>
+              )}
             </div>
           </fieldset>
-          <button
-            type="submit"
-            className="bg-primary text-surface hover:bg-primary/80 mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold"
-          >
-            Register
-          </button>
+          <SubmitButton />
+          {!state.success && (
+            <span className="error mt-2 inline-block" aria-live="polite">
+              {state.message}
+            </span>
+          )}
         </form>
         <p className="font-dm text-text mt-4 text-center">
           Already have an account?{" "}
@@ -101,7 +141,30 @@ export default function Register() {
             Login
           </Link>
         </p>
+        <div className="mt-2 flex justify-center">
+          <Link to="/" className="text-text text-xl">
+            <FaHome />
+          </Link>
+        </div>
       </div>
     </AuthLayout>
   );
 }
+
+const SubmitButton = () => {
+  const status = useFormStatus();
+  return (
+    <button
+      type="submit"
+      className={cn(
+        "bg-primary text-surface mt-8 w-full cursor-pointer rounded-lg px-4 py-2.5 font-semibold",
+        status.pending
+          ? "bg-primary/80 hover:cursor-wait"
+          : "hover:bg-primary/80",
+      )}
+      disabled={status.pending}
+    >
+      Register
+    </button>
+  );
+};

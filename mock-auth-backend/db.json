@@ -1,23 +1,14 @@
 {
   "users": [
     {
-      "email": "testuser@example.com",
-      "password": "$2a$10$hppP5VRN8/tRipqXRNybNuOXFOAgK1KvynLjohPFxZAQgn.lQrqZ2",
+      "email": "testuser@mail.com",
+      "password": "$2a$10$hdV2maX2DnBD98gOv3E/a.xBUwJ5K2pewQFW14PKYgIsm/vNctRLK",
+      "first_name": "Test",
+      "last_name": "User",
       "id": 1
     }
   ],
-  "posts": [
-    {
-      "id": 1,
-      "title": "Public Post",
-      "content": "Anyone can see this post."
-    },
-    {
-      "id": 2,
-      "title": "Protected Post",
-      "content": "Only logged-in users can see this post."
-    }
-  ],
+  "tickets": [],
   "profile": {
     "name": "typicode"
   }

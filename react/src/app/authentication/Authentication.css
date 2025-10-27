@@ -18,5 +18,7 @@
 }
 
 .error {
-  display: none;
+  font-size: 14px;
+  color: var(--error);
+  /* display: none; */
 }

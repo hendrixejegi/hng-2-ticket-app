@@ -1,0 +1,58 @@
+.marketing {
+  position: relative;
+  /* create a stacking context so the ::before stays behind content */
+  z-index: 0;
+}
+
+.marketing::before,
+.marketing::after {
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  content: "";
+  pointer-events: none; /* allow clicks through the pseudo-element */
+  display: block;
+  position: fixed; /* keep background fixed while scrolling */
+  height: 100%;
+  background-attachment: fixed;
+}
+
+.marketing::before {
+  opacity: 0.35; /* reduced opacity for a subtle background */
+  z-index: -2;
+  width: 100%;
+  background-image: url(/mobile_waves.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.marketing::after {
+  z-index: -1; /* above ::before but behind .marketing content */
+  width: 100%;
+  opacity: 0.1; /* reduced opacity for a subtle background */
+  max-width: 1440px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  background-image: url(/circles.svg), url(/circles.svg);
+  background-repeat: no-repeat, no-repeat;
+  background-size:
+    92px 92px,
+    92px 92px;
+  background-position:
+    calc(100% - 16px) 68px,
+    16px calc(100% - 16px);
+}
+
+/* On large screens swap the horizontal positions of the two circles */
+@media screen and (min-width: 1024px) {
+  .marketing::after {
+    background-position:
+      16px 68px,
+      calc(100% - 16px) calc(100% - 16px);
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .marketing::before {
+    background-image: url(/desktop_waves.svg);
+  }
+}

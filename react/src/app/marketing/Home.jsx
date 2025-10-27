@@ -1,6 +1,6 @@
 import { Link } from "react-router";
-import { useNavigate } from "react-router";
-import { cn } from "../../../utils/cn";
+import { useNavigate, useOutletContext } from "react-router";
+import { cn } from "../../utils";
 
 const featuresList = [
   {
@@ -31,8 +31,9 @@ const featuresList = [
 ];
 
 export default function Home() {
+  const { session } = useOutletContext();
   return (
-    <>
+    <div>
       {/* Hero section */}
       <div className="flex h-screen w-full flex-col items-center justify-center p-4 pt-[68px]">
         <h1 className="font-dm mb-8 max-w-3xl text-center text-4xl font-bold">
@@ -42,22 +43,35 @@ export default function Home() {
           <span className="text-primary">Resolve</span> in One Smart Dashboard.
         </h1>
         <div className="flex flex-col items-center gap-4 md:flex-row">
-          <CTAButton
-            to={"/login"}
-            className="text-primary hover:text-primary/80"
-          >
-            Login
-          </CTAButton>
-          <CTAButton
-            to={"/register"}
-            className="bg-primary text-surface hover:bg-primary/80"
-          >
-            Get Started
-          </CTAButton>
+          {session ? (
+            <Link to="/dashboard">
+              <CTAButton
+                to={"/register"}
+                className="bg-primary text-surface hover:bg-primary/80"
+              >
+                View Dashboard
+              </CTAButton>
+            </Link>
+          ) : (
+            <>
+              <CTAButton
+                to={"/login"}
+                className="text-primary hover:text-primary/80"
+              >
+                Login
+              </CTAButton>
+              <CTAButton
+                to={"/register"}
+                className="bg-primary text-surface hover:bg-primary/80"
+              >
+                Get Started
+              </CTAButton>
+            </>
+          )}
         </div>
       </div>
       {/* Features section */}
-      <section className="flex w-full flex-col items-center justify-center p-4">
+      <section className="flex min-h-screen w-full flex-col items-center justify-center p-4 pt-[68px]">
         <div>
           <h2 className="font-dm text-primary mb-8 text-center text-3xl font-bold">
             Stay on Top of Every Ticket
@@ -69,7 +83,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
 
