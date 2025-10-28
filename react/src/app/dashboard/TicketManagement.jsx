@@ -41,23 +41,30 @@ export default function TicketManagement() {
   const [mobileFilter, setMobileFilter] = useState({
     value: "0",
     filteredTickets: ticketsData,
-    initialRender: true,
   });
 
-  const initialMobileFilterSetRef = useRef(false);
+  // keep mobile filtered list in sync whenever tickets or sorted groups change
   useEffect(() => {
-    // only run once: after the first successful fetch of ticketsData
-    if (initialMobileFilterSetRef.current) return;
-    if (isFetching) return;
     if (!ticketsData) return;
 
-    setMobileFilter((prev) => ({
-      ...prev,
-      filteredTickets: ticketsData,
-      initialRender: false,
-    }));
-    initialMobileFilterSetRef.current = true;
-  }, [isFetching, ticketsData]);
+    setMobileFilter((prev) => {
+      let filtered;
+      switch (prev.value) {
+        case "1":
+          filtered = sortedData.open;
+          break;
+        case "2":
+          filtered = sortedData.progress;
+          break;
+        case "3":
+          filtered = sortedData.closed;
+          break;
+        default:
+          filtered = ticketsData;
+      }
+      return { ...prev, filteredTickets: filtered };
+    });
+  }, [ticketsData, sortedData.open, sortedData.progress, sortedData.closed]);
 
   const updateMobileFilter = (event) => {
     const value = event.target.value;
