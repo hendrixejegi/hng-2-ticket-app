@@ -106,7 +106,7 @@ export default function DashboardLayout() {
             aria-controls="mobile-nav-container"
             aria-expanded={showMobileNav}
             onClick={() => setShowMobileNav((prev) => !prev)}
-            className="isolate z-60 md:hidden"
+            className="isolate z-40 md:hidden"
           >
             {showMobileNav ? (
               <FaTimes aria-hidden="true" className="text-2xl" />
@@ -118,7 +118,7 @@ export default function DashboardLayout() {
             id="mobile-nav-container"
             aria-live="polite"
             className={cn(
-              "bg-surface fixed inset-0 z-50 items-center justify-center md:hidden",
+              "bg-surface fixed inset-0 z-30 items-center justify-center md:hidden",
               showMobileNav ? "flex" : "hidden",
             )}
           >
