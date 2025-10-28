@@ -5,9 +5,9 @@ const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@()!%*?&])[A-Za-z\d@()!%*?&]{8,}$/;
 
 const registerSchema = z.object({
-  first_name: z.string("Field is required"),
-  last_name: z.string("Field is required"),
-  email: z.email(),
+  first_name: z.string().min(2, "Field is required"),
+  last_name: z.string().min(2, "Field is required"),
+  email: z.email("Enter a valid email"),
   password: z
     .string("Field is required")
     .min(8, "Password must be at least 8 characters")

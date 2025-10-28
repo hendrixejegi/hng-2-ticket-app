@@ -2,8 +2,8 @@ import * as z from "zod";
 import { getBaseUrl } from "../utils";
 
 const loginSchema = z.object({
-  email: z.email(),
-  password: z.string("Field is required").min(2, "Field is required"),
+  email: z.email("Enter a valid email"),
+  password: z.string().min(2, "Field is required"),
 });
 
 // Helper to parse JSON safely
