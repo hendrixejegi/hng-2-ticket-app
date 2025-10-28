@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-function TicketCard({ data, editTicket, deleteTicket }) {
+export function TicketCard({ data, editTicket, deleteTicket }) {
   const resolveTicketPriority = useCallback((code) => {
     switch (code) {
       case 0:
@@ -76,5 +76,3 @@ function TicketCard({ data, editTicket, deleteTicket }) {
     </div>
   );
 }
-
-export default TicketCard;

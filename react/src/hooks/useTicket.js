@@ -4,12 +4,15 @@ import getTickets from "../actions/getTickets";
 
 const useTickets = (init = null) => {
   const [session] = useState(getSession());
-  const [ticketsData, setTicketsData] = useState(init);
+  const [state, setState] = useState({ isFetching: true, data: init });
 
   const refreshTicketsData = useCallback(() => {
+    setState((prev) => ({ ...prev, isFetching: true }));
     if (!session) return;
     const { token } = session;
-    getTickets(token).then((res) => setTicketsData(res));
+    getTickets(token).then((res) => {
+      setState((prev) => ({ ...prev, isFetching: false, data: res }));
+    });
   }, [session]);
 
   // Fetch tickets data
@@ -17,7 +20,7 @@ const useTickets = (init = null) => {
     refreshTicketsData();
   }, [session, refreshTicketsData]);
 
-  return [ticketsData, refreshTicketsData];
+  return [state.data, refreshTicketsData, state.isFetching];
 };
 
 export default useTickets;

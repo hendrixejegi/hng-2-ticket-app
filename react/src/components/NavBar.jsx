@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Logo from "./Logo";
-import { cn } from "../utils/cn";
+import { cn } from "../utils";
 import UserInfo from "./UserInfo";
 
 const NavBar = ({ session, logout }) => {

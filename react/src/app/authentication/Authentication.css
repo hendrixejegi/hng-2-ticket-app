@@ -9,11 +9,11 @@
   font-weight: 500;
 }
 
-.input-group > input {
+input {
   width: 100%;
   border: 2px solid var(--primary);
   outline: var(--primary);
-  padding: 10px 16px;
+  padding: 10px 40px 10px 16px;
   border-radius: 8px;
 }
 

@@ -1,4 +1,4 @@
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Link, useNavigate } from "react-router";
 import AuthLayout from "../../components/AuthLayout";
@@ -6,6 +6,7 @@ import "./Authentication.css";
 import register from "../../actions/register";
 import { checkError, showError, cn, getSession } from "../../utils";
 import { FaHome } from "react-icons/fa";
+import { FaEyeSlash, FaEye } from "react-icons/fa6";
 
 export default function Register() {
   const [state, registerAction] = useActionState(register, {
@@ -14,6 +15,18 @@ export default function Register() {
     fieldErrors: null,
     data: { first_name: "", last_name: "", email: "", password: "" },
   });
+
+  const [passwordType, setPasswordType] = useState("password");
+
+  const handlePasswordTypeChange = (event) => {
+    event.preventDefault();
+
+    if (passwordType === "password") {
+      setPasswordType("text");
+    } else {
+      setPasswordType("password");
+    }
+  };
 
   const navigate = useNavigate();
 
@@ -110,14 +123,26 @@ export default function Register() {
             </div>
             <div className="input-group">
               <label htmlFor="password">Password*:</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                aria-describedby="password-error"
-                required
-                defaultValue={state.data.password}
-              />
+              <div className="relative">
+                <input
+                  type={passwordType}
+                  id="password"
+                  name="password"
+                  aria-describedby="password-error"
+                  required
+                  defaultValue={state.data.password}
+                />
+                <button
+                  className="absolute right-4 bottom-4 cursor-pointer"
+                  onClick={handlePasswordTypeChange}
+                >
+                  {passwordType === "password" ? (
+                    <FaEye aria-hidden="true" />
+                  ) : (
+                    <FaEyeSlash aria-hidden="true" />
+                  )}
+                </button>
+              </div>
               {checkError("password", state) && (
                 <span id="password-error" className="error" aria-live="polite">
                   {showError("password", state)}

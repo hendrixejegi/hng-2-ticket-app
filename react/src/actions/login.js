@@ -6,7 +6,20 @@ const loginSchema = z.object({
   password: z.string("Field is required").min(2, "Field is required"),
 });
 
-export default async function login(prevState, formData) {
+// Helper to parse JSON safely
+async function tryParseJson(response) {
+  try {
+    return await response.json();
+  } catch {
+    return null;
+  }
+}
+
+export default async function login(
+  prevState,
+  formData,
+  { timeout = 8000 } = {},
+) {
   const data = Object.fromEntries(formData);
   const result = loginSchema.safeParse(data);
 
@@ -14,7 +27,7 @@ export default async function login(prevState, formData) {
     return {
       data,
       success: false,
-      fieldErrors: z.flattenError(result.error).fieldErrors,
+      fieldErrors: z.flattenError(result.error).fieldErrors || null,
       message: "Cannot submit empty fields",
     };
   }
@@ -24,6 +37,9 @@ export default async function login(prevState, formData) {
     message: null,
   };
 
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+
   try {
     const baseUrl = getBaseUrl();
 
@@ -31,44 +47,78 @@ export default async function login(prevState, formData) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
+      signal: controller.signal,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
+    clearTimeout(timer);
 
+    const parsed = await tryParseJson(response);
+
+    if (!response.ok) {
+      // Provide more specific messages where possible
       if (response.status === 400) {
-        const errMessage = "Login Failed: Incorrect email or password";
-        serverResult.message = errMessage;
-        throw new Error(errMessage);
+        serverResult.message = "Login failed: Incorrect email or password.";
       } else if (response.status === 401) {
-        serverResult.message = "Login Failed: " + errorData.message;
-        throw new Error(errorData.message);
+        serverResult.message = `Login failed: ${parsed?.message || "Unauthorized"}`;
+      } else if (response.status >= 500) {
+        serverResult.message =
+          "Server error occurred during login. Please try again later.";
       } else {
-        console.error(
-          "Login Failed (Server Error):",
-          errorData.message || response.statusText,
-        );
-        throw new Error("Server error occurred during login. Please try again");
+        serverResult.message =
+          parsed?.message || response.statusText || "Login failed.";
       }
+
+      return {
+        fieldErrors: null,
+        ...serverResult,
+        data,
+        success: false,
+      };
     }
 
     // Success
     serverResult.success = true;
-    const successData = await response.json();
-    localStorage.setItem(
-      "ticketapp_session",
-      JSON.stringify({
-        userId: successData.user.id,
-        token: successData.accessToken,
-      }),
-    );
-  } catch (error) {
-    console.error("Fetch error", error);
-  }
+    const successData = parsed || {};
 
-  return {
-    fieldErrors: null,
-    ...serverResult,
-    data,
-  };
+    // persist session
+    try {
+      localStorage.setItem(
+        "ticketapp_session",
+        JSON.stringify({
+          userId: successData.user?.id,
+          token: successData.accessToken,
+        }),
+      );
+    } catch (e) {
+      // localStorage might fail in some environments; log and continue
+      console.warn("Could not persist session to localStorage", e);
+    }
+
+    return {
+      fieldErrors: null,
+      ...serverResult,
+      data,
+      success: true,
+    };
+  } catch (error) {
+    clearTimeout(timer);
+
+    // Handle Abort errors separately
+    if (error.name === "AbortError") {
+      serverResult.message =
+        "Network timeout: The request took too long. Please check your connection and try again.";
+    } else {
+      serverResult.message =
+        "Network error: Could not reach the server. Please check your internet connection.";
+    }
+
+    console.error("Login fetch error:", error);
+
+    return {
+      fieldErrors: null,
+      ...serverResult,
+      data,
+      success: false,
+    };
+  }
 }
